@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1795376574181,
+  "updatedAt": 1795387423109,
   "bases": [
     {
       "id": "plain",
@@ -11,14 +11,14 @@
     {
       "id": "sesame",
       "name": "กรีกโยเกิร์ต งาดำ (60g)",
-      "price": 69,
+      "price": 79,
       "emoji": "🖤",
       "available": true
     },
     {
       "id": "grape",
       "name": "องุ่นสอดไส้กรีกโยเกิร์ต (1 กล่อง)",
-      "price": 49,
+      "price": 59,
       "emoji": "🍇",
       "isSpecial": true,
       "available": true
