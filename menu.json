@@ -1,17 +1,71 @@
 {
-  "updatedAt": 1795364400000,
+  "updatedAt": 1795367338252,
   "bases": [
-    { "id": "plain", "name": "กรีกโยเกิร์ต ดั้งเดิม (60g)", "price": 69, "emoji": "🍨", "available": true },
-    { "id": "sesame", "name": "กรีกโยเกิร์ต งาดำ (60g)", "price": 69, "emoji": "🖤", "available": true },
-    { "id": "grape", "name": "องุ่นสอดไส้กรีกโยเกิร์ต (1 กล่อง)", "price": 89, "emoji": "🍇", "isSpecial": true, "available": true }
+    {
+      "id": "plain",
+      "name": "กรีกโยเกิร์ต ดั้งเดิม (60g)",
+      "price": 69,
+      "emoji": "🍨",
+      "available": true
+    },
+    {
+      "id": "sesame",
+      "name": "กรีกโยเกิร์ต งาดำ (60g)",
+      "price": 69,
+      "emoji": "🖤",
+      "available": true
+    },
+    {
+      "id": "grape",
+      "name": "องุ่นสอดไส้กรีกโยเกิร์ต (1 กล่อง)",
+      "price": 69,
+      "emoji": "🍇",
+      "isSpecial": true,
+      "available": true
+    }
   ],
   "toppings": [
-    { "id": "banana", "name": "กล้วยหอม", "emoji": "🍌", "available": true },
-    { "id": "strawberry", "name": "สตรอว์เบอร์รี่", "emoji": "🍓", "available": true },
-    { "id": "blueberry", "name": "บลูเบอร์รี่", "emoji": "🫐", "available": true },
-    { "id": "kiwi", "name": "กีวี่", "emoji": "🥝", "available": true },
-    { "id": "dragonfruit", "name": "แก้วมังกร", "emoji": "🐉", "available": true },
-    { "id": "biscoff", "name": "บิสกิตคาราเมล", "emoji": "🍪", "available": true },
-    { "id": "granola", "name": "กราโนล่าช็อค", "emoji": "🍫", "available": true }
+    {
+      "id": "banana",
+      "name": "กล้วยหอม",
+      "emoji": "🍌",
+      "available": true
+    },
+    {
+      "id": "strawberry",
+      "name": "สตรอว์เบอร์รี่",
+      "emoji": "🍓",
+      "available": true
+    },
+    {
+      "id": "blueberry",
+      "name": "บลูเบอร์รี่",
+      "emoji": "🫐",
+      "available": true
+    },
+    {
+      "id": "kiwi",
+      "name": "กีวี่",
+      "emoji": "🥝",
+      "available": true
+    },
+    {
+      "id": "dragonfruit",
+      "name": "แก้วมังกร",
+      "emoji": "🐉",
+      "available": true
+    },
+    {
+      "id": "biscoff",
+      "name": "บิสกิตคาราเมล",
+      "emoji": "🍪",
+      "available": true
+    },
+    {
+      "id": "granola",
+      "name": "กราโนล่าช็อค",
+      "emoji": "🍫",
+      "available": true
+    }
   ]
 }
