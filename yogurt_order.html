@@ -2061,10 +2061,14 @@
           ${isConnected ? `
             <div style="margin-bottom: 16px; padding: 12px; background: rgba(16, 185, 129, 0.08); border: 1px dashed #10b981; border-radius: 8px;">
               <div style="font-size: 0.84rem; font-weight: bold; color: #065f46; margin-bottom: 4px;">📲 จัดการร้านผ่านมือถือ ไม่ต้องพิมพ์ Token ใหม่:</div>
-              <div style="font-size: 0.76rem; color: #475569; margin-bottom: 8px;">กดปุ่มนี้เพื่อคัดลอกลิงก์พิเศษ ส่งเข้าแชท LINE ตัวเอง แล้วเปิดบนมือถือได้ทันที (ระบบจะเชื่อมต่อให้เองอัตโนมัติ):</div>
-              <button type="button" class="btn-save-admin" style="font-size: 0.8rem; padding: 6px 12px; background: #059669;" onclick="copyMobileAdminLink()">
-                📋 คัดลอกลิงก์แอดมินสำหรับเปิดบนมือถือ
-              </button>
+              <div style="font-size: 0.76rem; color: #475569; margin-bottom: 8px;">กดปุ่มเพื่อคัดลอกลิงก์พิเศษ ส่งเข้าแชท LINE ตัวเอง แล้วแตะเปิดบนมือถือได้ทันที (ระบบจะล็อกอิน Admin ให้อัตโนมัติ):</div>
+              <div style="display: flex; gap: 6px; margin-bottom: 4px;">
+                <input type="text" id="mobileAdminLinkInput" readonly class="form-input" style="font-size: 0.75rem; background: #ffffff;" value="${(window.location.protocol === 'file:' ? 'https://fireworkz6992-cloud.github.io/greekyogurt/' : window.location.origin + window.location.pathname) + '#admin_token=' + savedToken}" onclick="this.select()">
+                <button type="button" class="btn-save-admin" id="btnCopyMobileLink" style="font-size: 0.8rem; padding: 6px 14px; background: #059669; white-space: nowrap;" onclick="copyMobileAdminLink()">
+                  📋 คัดลอก
+                </button>
+              </div>
+              <div style="font-size: 0.7rem; color: #94a3b8;">* แตะช่องข้อความเพื่อเลือกทั้งหมด หรือกดปุ่มคัดลอกได้เลยค่ะ</div>
             </div>
           ` : ''}
 
@@ -2093,14 +2097,48 @@
       }
     }
 
-    function copyMobileAdminLink() {
+    async function copyMobileAdminLink() {
       const token = localStorage.getItem('yogurt_github_token');
       if (!token) {
         alert('กรุณากรอกและบันทึก GitHub Token ในช่องด้านบนก่อนค่ะ');
         return;
       }
-      const adminLink = window.location.origin + window.location.pathname + '#admin_token=' + token;
-      copyToClipboardFallback(adminLink);
+      const baseUrl = window.location.protocol === 'file:' 
+        ? 'https://fireworkz6992-cloud.github.io/greekyogurt/' 
+        : window.location.origin + window.location.pathname;
+      const adminLink = baseUrl + '#admin_token=' + token;
+
+      const input = document.getElementById('mobileAdminLinkInput');
+      if (input) {
+        input.value = adminLink;
+        input.focus();
+        input.select();
+        input.setSelectionRange(0, 99999);
+      }
+
+      let copied = false;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(adminLink);
+          copied = true;
+        }
+      } catch (e) {}
+
+      if (!copied) {
+        try {
+          copied = document.execCommand('copy');
+        } catch (e) {}
+      }
+
+      const btn = document.getElementById('btnCopyMobileLink');
+      if (btn) {
+        btn.innerHTML = '✅ คัดลอกแล้ว!';
+        btn.style.background = '#047857';
+        setTimeout(() => {
+          btn.innerHTML = '📋 คัดลอก';
+          btn.style.background = '#059669';
+        }, 3000);
+      }
       showToast('📋 คัดลอกลิงก์แอดมินสำหรับมือถือแล้ว! ส่งเข้า LINE เปิดได้เลยค่ะ 🎉');
     }
 
