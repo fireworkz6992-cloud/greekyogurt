@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>สั่งกรีกโยเกิร์ตโฮมเมด 🍨 Greek Yogurt Order</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Kanit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #f43f5e;
+      --primary-soft: #ffe4e6;
+      --primary-hover: #e11d48;
+      --accent-pink: #ec4899;
+      --accent-yellow: #f59e0b;
+      --bg: #fffbf5;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #f1e8dc;
+      --radius: 16px;
+      --font-kanit: 'Kanit', sans-serif;
+      --font-thai: 'IBM Plex Sans Thai', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(circle at 10% 10%, rgba(244, 63, 94, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: var(--font-thai);
+      min-height: 100vh;
+      padding: 16px 12px 100px 12px;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Hero Banner Header */
+    .hero-banner {
+      background: linear-gradient(135deg, #fff0f3 0%, #fef3c7 100%);
+      border: 1.5px solid #fecdd3;
+      border-radius: 20px;
+      padding: 20px 16px;
+      text-align: center;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(244, 63, 94, 0.08);
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: #f43f5e;
+      color: #ffffff;
+      font-family: var(--font-kanit);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-banner h1 {
+      font-family: var(--font-kanit);
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: #be123c;
+      line-height: 1.25;
+    }
+
+    .hero-banner p {
+      font-size: 0.88rem;
+      color: #881337;
+      margin-top: 4px;
+    }
+
+    .rule-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px dashed #f43f5e;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      color: #be123c;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    /* Section Header */
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 18px 4px 10px 4px;
+    }
+
+    .section-title {
+      font-family: var(--font-kanit);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Item Card (Each Yogurt Cup) */
+    .item-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      position: relative;
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+
+    .item-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 12px;
+    }
+
+    .item-cup-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cup-badge-pill {
+      font-family: var(--font-kanit);
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.01em;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .btn-delete-cup {
+      background: rgba(254, 226, 226, 0.9);
+      border: 1px solid #fca5a5;
+      color: #ef4444;
+      font-size: 0.78rem;
+      font-family: var(--font-kanit);
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-delete-cup:hover {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* Step Labels inside card */
+    .step-label {
+      font-family: var(--font-kanit);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #334155;
+      margin: 10px 0 8px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .step-hint {
+      font-size: 0.76rem;
+      color: #f43f5e;
+      font-weight: 500;
+    }
+
+    /* Radio Base Yogurt Options */
+    .base-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .base-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1.5px solid rgba(0, 0, 0, 0.07);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(4px);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .base-btn:hover {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .base-btn.selected {
+      border-color: #f43f5e;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(244, 63, 94, 0.15), 0 0 0 1px #f43f5e;
+    }
+
+    .base-btn.out-of-stock {
+      opacity: 0.55;
+      background: #f8fafc;
+      border-style: dashed;
+      cursor: not-allowed;
+    }
+
+    .base-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .base-price {
+      font-family: var(--font-kanit);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #f43f5e;
+    }
+
+    /* Toppings Pills Grid */
+    .toppings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .topping-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1.5px solid rgba(0, 0, 0, 0.07);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(4px);
+      border-radius: 10px;
+      padding: 9px 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .topping-pill:hover {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .topping-pill.selected {
+      border-color: #ec4899;
+      background: #fff5f8;
+      box-shadow: 0 2px 6px rgba(236, 72, 153, 0.12);
+    }
+
+    .topping-pill.out-of-stock {
+      opacity: 0.5;
+      background: #f1f5f9;
+      border-style: dashed;
+      cursor: not-allowed;
+    }
+
+    .topping-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #334155;
+    }
+
+    .topping-badge {
+      font-family: var(--font-kanit);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .topping-badge.free {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .topping-badge.extra {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .topping-badge.sold-out,
+    .sold-out-badge {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    /* Honey Row */
+    .honey-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 251, 235, 0.85);
+      border: 1px dashed #fde68a;
+      border-radius: 12px;
+      padding: 9px 12px;
+      margin-top: 12px;
+    }
+
+    .honey-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .honey-switch {
+      display: flex;
+      gap: 6px;
+    }
+
+    .honey-btn {
+      border: 1px solid #fde68a;
+      background: #ffffff;
+      color: #78350f;
+      font-family: var(--font-kanit);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .honey-btn.active {
+      background: #f59e0b;
+      color: #ffffff;
+      border-color: #f59e0b;
+    }
+
+    /* Cup Subtotal Box */
+    .cup-subtotal {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      color: #64748b;
+    }
+
+    .cup-subtotal b {
+      font-family: var(--font-kanit);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    /* Add Cup Button */
+    .btn-add-cup {
+      width: 100%;
+      background: #ffffff;
+      border: 2px dashed #f43f5e;
+      color: #f43f5e;
+      font-family: var(--font-kanit);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      margin-bottom: 20px;
+    }
+
+    .btn-add-cup:hover {
+      background: #fff0f3;
+      transform: translateY(-1px);
+    }
+
+    /* Customer Info & Extras Form Card */
+    .extra-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      font-family: var(--font-kanit);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #334155;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-family: var(--font-thai);
+      font-size: 0.88rem;
+      color: var(--text-main);
+      background: #f8fafc;
+      transition: border-color 0.15s ease;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: #f43f5e;
+      background: #ffffff;
+    }
+
+    .date-presets {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .date-presets::-webkit-scrollbar {
+      display: none;
+    }
+
+    .date-chip {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      font-family: var(--font-kanit);
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .date-chip:hover {
+      background: #e2e8f0;
+    }
+
+    .date-chip.active {
+      background: #be123c;
+      color: #ffffff;
+      border-color: #be123c;
+    }
+
+    /* Summary Card */
+    .summary-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .summary-title {
+      font-family: var(--font-kanit);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+
+    .summary-text-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: var(--font-thai);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #334155;
+      white-space: pre-wrap;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    /* Floating Bottom Action Bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1.5px solid #fecdd3;
+      padding: 12px 16px;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+      z-index: 100;
+    }
+
+    .bottom-content {
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .total-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .total-label {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .total-amount {
+      font-family: var(--font-kanit);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #be123c;
+      line-height: 1.1;
+    }
+
+    .btn-send-order {
+      flex: 1;
+      background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+      color: #ffffff;
+      border: none;
+      font-family: var(--font-kanit);
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 13px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(244, 63, 94, 0.35);
+      transition: all 0.15s ease;
+    }
+
+    .btn-send-order:active {
+      transform: scale(0.98);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-60px);
+      background: #1e293b;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      max-width: 90%;
+      text-align: center;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Admin Button Gear Icon */
+    .btn-admin-gear {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid #fecdd3;
+      border-radius: 999px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: #881337;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-admin-gear:hover {
+      background: #ffffff;
+      transform: rotate(45deg);
+    }
+
+    /* Admin Modal Overlay */
+    .admin-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .admin-modal-overlay.open {
+      display: flex;
+    }
+
+    .admin-card {
+      background: #ffffff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      border: 1.5px solid #fecdd3;
+      overflow: hidden;
+      animation: modalSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .admin-header {
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #fff1f2 0%, #fffbeb 100%);
+      border-bottom: 1.5px solid #fecdd3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-title {
+      font-family: var(--font-kanit);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #be123c;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-close-admin {
+      background: #fee2e2;
+      border: none;
+      color: #ef4444;
+      font-size: 0.9rem;
+      font-weight: 700;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+    }
+
+    .btn-close-admin:hover {
+      background: #fca5a5;
+    }
+
+    .admin-tabs {
+      display: flex;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 8px 12px 0 12px;
+      gap: 6px;
+      overflow-x: auto;
+    }
+
+    .admin-tab-btn {
+      padding: 8px 14px;
+      border: 1px solid transparent;
+      border-bottom: none;
+      background: transparent;
+      font-family: var(--font-kanit);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .admin-tab-btn.active {
+      background: #ffffff;
+      color: #be123c;
+      border-color: #e2e8f0;
+      border-bottom-color: #ffffff;
+      margin-bottom: -1px;
+    }
+
+    .admin-body {
+      padding: 16px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .admin-item-row {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .admin-item-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .admin-input-emoji {
+      width: 38px;
+      height: 36px;
+      font-size: 1.15rem;
+      text-align: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      outline: none;
+    }
+
+    .admin-input-name {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-family: var(--font-thai);
+      font-size: 0.86rem;
+      outline: none;
+    }
+
+    .admin-input-name:focus,
+    .admin-input-price:focus,
+    .admin-input-emoji:focus {
+      border-color: #f43f5e;
+    }
+
+    .admin-input-price {
+      width: 60px;
+      padding: 6px 6px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-family: var(--font-kanit);
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: center;
+      outline: none;
+    }
+
+    .admin-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-toggle-stock {
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-family: var(--font-kanit);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-toggle-stock.in-stock {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .btn-toggle-stock.out-of-stock {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecdd3;
+    }
+
+    .btn-delete-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #94a3b8;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+    }
+
+    .btn-delete-item:hover {
+      background: #fee2e2;
+      color: #ef4444;
+      border-color: #fca5a5;
+    }
+
+    .admin-add-box {
+      background: #fff7ed;
+      border: 1.5px dashed #fed7aa;
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 14px;
+    }
+
+    .admin-add-title {
+      font-family: var(--font-kanit);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #c2410c;
+      margin-bottom: 8px;
+    }
+
+    .admin-add-form {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-add-submit {
+      background: #ea580c;
+      color: #ffffff;
+      border: none;
+      font-family: var(--font-kanit);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .btn-add-submit:hover {
+      background: #c2410c;
+    }
+
+    /* Admin Cloud Settings Tab */
+    .cloud-status-card {
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cloud-status-card.connected {
+      background: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      color: #065f46;
+    }
+
+    .cloud-status-card.disconnected {
+      background: #fffbeb;
+      border: 1.5px solid #fde68a;
+      color: #92400e;
+    }
+
+    .cloud-guide-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 14px;
+      font-size: 0.84rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    .cloud-guide-title {
+      font-family: var(--font-kanit);
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-open-token {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #24292f;
+      color: #ffffff !important;
+      text-decoration: none;
+      font-family: var(--font-kanit);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
+      margin: 8px 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: background 0.15s ease;
+    }
+
+    .btn-open-token:hover {
+      background: #0f172a;
+    }
+
+    .admin-footer {
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .admin-footer-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-save-admin {
+      flex: 1;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      border: none;
+      font-family: var(--font-kanit);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 11px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+      transition: all 0.15s ease;
+    }
+
+    .btn-save-admin:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .btn-reset-admin {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+      font-family: var(--font-kanit);
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-reset-admin:hover {
+      background: #e2e8f0;
+      color: #334155;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <button type="button" class="btn-admin-gear" onclick="promptAdminPassword()" title="จัดการหลังบ้าน (เจ้าของร้าน)">
+        ⚙️
+      </button>
+      <span class="hero-tag">HOMEMADE GREEK YOGURT</span>
+      <h1>กรีกโยเกิร์ตสดพร้อมทาน 🍨</h1>
+      <p>เนื้อแน่น เข้มข้น โปรตีนสูง สดใหม่ทุกวัน</p>
+      <div class="rule-pill">
+        ✨ ฟรี ท็อปปิ้ง 2 อย่าง / อย่างต่อไป +10.-
+      </div>
+    </div>
+
+    <!-- Section Header -->
+    <div class="section-head">
+      <div class="section-title">
+        <span>🥣 รายการโยเกิร์ตที่สั่ง</span>
+        <span style="font-size: 0.85rem; color: #94a3b8;" id="totalCupsCount">(1 ถ้วย)</span>
+      </div>
+    </div>
+
+    <!-- Cup Cards Container -->
+    <div id="cupsContainer">
+      <!-- Generated by JS -->
+    </div>
+
+    <!-- Add Cup Button -->
+    <button type="button" class="btn-add-cup" onclick="addCup()">
+      <span>➕ เพิ่มโยเกิร์ตอีกถ้วย / รายการอื่น</span>
+    </button>
+
+    <!-- Delivery / Pickup Info -->
+    <div class="extra-card">
+      <div class="form-group">
+        <label class="form-label" for="orderDate">📅 วันที่ต้องการรับสินค้า:</label>
+        <input type="text" id="orderDate" class="form-input" placeholder="เช่น วันจันทร์, วันอังคาร, วันศุกร์" value="">
+        <div class="date-presets" id="datePresets">
+          <span class="date-chip" onclick="setDate('วันจันทร์')">วันจันทร์</span>
+          <span class="date-chip" onclick="setDate('วันอังคาร')">วันอังคาร</span>
+          <span class="date-chip" onclick="setDate('วันพุธ')">วันพุธ</span>
+          <span class="date-chip" onclick="setDate('วันพฤหัส')">วันพฤหัส</span>
+          <span class="date-chip" onclick="setDate('วันศุกร์')">วันศุกร์</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 14px;">
+        <label class="form-label" for="orderTime">⏰ เวลาที่สะดวกรับสินค้า:</label>
+        <input type="text" id="orderTime" class="form-input" placeholder="เช่น 12:30 น., ช่วงบ่าย, หลังเลิกงาน" value="">
+        <div class="date-presets" id="timePresets">
+          <span class="date-chip" onclick="setTime('ช่วงเช้า (09:00 - 12:00)')">ช่วงเช้า (09:00 - 12:00)</span>
+          <span class="date-chip" onclick="setTime('ช่วงเที่ยง-บ่าย (12:00 - 15:00)')">เที่ยง-บ่าย (12:00 - 15:00)</span>
+          <span class="date-chip" onclick="setTime('ช่วงเย็น (16:00 - 19:00)')">ช่วงเย็น (16:00 - 19:00)</span>
+          <span class="date-chip" onclick="setTime('สะดวกตลอดทั้งวัน')">สะดวกทั้งวัน</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 14px;">
+        <label class="form-label" for="orderLocation">📍 ส่งที่ไหน / จุดนัดรับ:</label>
+        <input type="text" id="orderLocation" class="form-input"
+          placeholder="ระบุสถานที่ส่ง เช่น ชื่อตึก, ห้อง, บ้านเลขที่ หรือจุดนัดรับ" value="">
+      </div>
+
+      <div class="form-group" style="margin-top: 14px;">
+        <label class="form-label" for="orderNote">📝 โน้ตเพิ่มเติมถึงร้าน (ถ้ามี):</label>
+        <input type="text" id="orderNote" class="form-input" placeholder="เช่น แยกท็อปปิ้ง, หวานน้อย, ขอช้อนเพิ่ม" value="">
+        <div class="date-presets" id="notePresets">
+          <span class="date-chip" onclick="appendNote('แยกท็อปปิ้ง')">+ แยกท็อปปิ้ง</span>
+          <span class="date-chip" onclick="appendNote('ขอช้อนด้วยค่ะ')">+ ขอช้อน</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Realtime Text Preview -->
+    <div class="summary-card">
+      <div class="summary-title">👁️ ตัวอย่างข้อความที่จะส่งเข้าแชท:</div>
+      <div class="summary-text-box" id="previewText">
+        กำลังเตรียมรายการ...
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Floating Bottom Bar -->
+  <div class="bottom-bar">
+    <div class="bottom-content">
+      <div class="total-col">
+        <span class="total-label" id="bottomItemsLabel">รวม 1 รายการ</span>
+        <span class="total-amount" id="bottomTotalAmount">0 ฿</span>
+      </div>
+      <button type="button" class="btn-send-order" onclick="copyAndFinishOrder()">
+        <span>📋 สั่งซื้อ & คัดลอกส่งแชท</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notice -->
+  <div class="toast" id="toast">
+    <span>✅</span>
+    <span id="toastMsg">คัดลอกรายการแล้ว! วางในแชทส่งให้ร้านได้เลยค่ะ</span>
+  </div>
+
+  <!-- Admin Password Prompt Modal -->
+  <div class="admin-modal-overlay" id="adminLoginModal">
+    <div class="admin-card" style="max-width: 320px; text-align: center; padding: 24px;">
+      <div style="font-size: 2.2rem; margin-bottom: 8px;">🔒</div>
+      <div style="font-family: var(--font-kanit); font-size: 1.15rem; font-weight: 700; color: #1e293b;">เข้าสู่ระบบหลังบ้าน</div>
+      <p style="font-size: 0.82rem; color: #64748b; margin-top: 4px; margin-bottom: 16px;">เฉพาะเจ้าของร้าน เพื่อจัดการเมนู/ราคา</p>
+      <input type="password" id="adminPassInput" class="form-input" placeholder="ใส่รหัสผ่าน 4 หลัก" maxlength="8"
+        style="text-align: center; font-size: 1.2rem; letter-spacing: 0.25em; margin-bottom: 10px;"
+        onkeyup="if(event.key==='Enter') submitAdminPass()">
+      <div id="adminPassError" style="color: #ef4444; font-size: 0.8rem; margin-bottom: 10px; display: none;">❌ รหัสผ่านไม่ถูกต้องค่ะ (3112)</div>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn-reset-admin" style="flex: 1;" onclick="closeAdminLogin()">ยกเลิก</button>
+        <button type="button" class="btn-save-admin" style="flex: 1; padding: 8px 12px; font-size: 0.9rem;"
+          onclick="submitAdminPass()">เข้าสู่ระบบ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard Modal -->
+  <div class="admin-modal-overlay" id="adminPanelModal">
+    <div class="admin-card">
+      <div class="admin-header">
+        <div class="admin-title">
+          <span>⚙️ จัดการเมนูร้านค้า (Admin)</span>
+        </div>
+        <button type="button" class="btn-close-admin" onclick="closeAdminPanel()">✕</button>
+      </div>
+      <div class="admin-tabs">
+        <button type="button" class="admin-tab-btn active" id="tabBtnBases" onclick="switchAdminTab('bases')">🍨 รสชาติโยเกิร์ต</button>
+        <button type="button" class="admin-tab-btn" id="tabBtnToppings" onclick="switchAdminTab('toppings')">🍓 ท็อปปิ้ง</button>
+        <button type="button" class="admin-tab-btn" id="tabBtnCloud" onclick="switchAdminTab('cloud')">☁️ เชื่อมต่อ Cloud (GitHub)</button>
+      </div>
+      <div class="admin-body" id="adminBody">
+        <!-- Generated by JS -->
+      </div>
+      <div class="admin-footer">
+        <div class="admin-footer-row">
+          <button type="button" class="btn-save-admin" id="btnSaveAdmin" onclick="saveAdminChanges()">
+            <span>💾 บันทึกการเปลี่ยนแปลง (Cloud Sync)</span>
+          </button>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px;">
+          <span style="font-size: 0.74rem; color: #94a3b8;">* บันทึกปุ๊บ เมนูจะอัปเดตให้ลูกค้าทุกคนเห็นทันที</span>
+          <button type="button" class="btn-reset-admin" onclick="resetAdminToDefault()">🔄 คืนค่าโรงงาน</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Default Product Catalog
+    const DEFAULT_BASES = [
+      { id: 'plain', name: 'กรีกโยเกิร์ต ดั้งเดิม (60g)', price: 69, emoji: '🍨', available: true },
+      { id: 'sesame', name: 'กรีกโยเกิร์ต งาดำ (60g)', price: 69, emoji: '🖤', available: true },
+      { id: 'grape', name: 'องุ่นสอดไส้กรีกโยเกิร์ต (1 กล่อง)', price: 89, emoji: '🍇', isSpecial: true, available: true }
+    ];
+
+    const DEFAULT_TOPPINGS = [
+      { id: 'banana', name: 'กล้วยหอม', emoji: '🍌', available: true },
+      { id: 'strawberry', name: 'สตรอว์เบอร์รี่', emoji: '🍓', available: true },
+      { id: 'blueberry', name: 'บลูเบอร์รี่', emoji: '🫐', available: true },
+      { id: 'kiwi', name: 'กีวี่', emoji: '🥝', available: true },
+      { id: 'dragonfruit', name: 'แก้วมังกร', emoji: '🐉', available: true },
+      { id: 'biscoff', name: 'บิสกิตคาราเมล', emoji: '🍪', available: true },
+      { id: 'granola', name: 'กราโนล่าช็อค', emoji: '🍫', available: true }
+    ];
+
+    // Active Catalog loaded from localStorage or default
+    let BASES = JSON.parse(localStorage.getItem('yogurt_custom_bases')) || JSON.parse(JSON.stringify(DEFAULT_BASES));
+    let TOPPINGS = JSON.parse(localStorage.getItem('yogurt_custom_toppings')) || JSON.parse(JSON.stringify(DEFAULT_TOPPINGS));
+
+    // Admin working state
+    let tempBases = [];
+    let tempToppings = [];
+    let currentAdminTab = 'bases';
+
+    // Cups state (Default: 1 cup, completely clean / unselected)
+    let cups = [
+      {
+        id: 1,
+        baseId: null,
+        toppings: [],
+        honey: 'free'
+      }
+    ];
+
+    // Soft Pastel Cafe Themes for each cup (1 to 10+)
+    const CUP_THEMES = [
+      {
+        name: 'Strawberry Rose',
+        icon: '🍓',
+        cardBg: 'linear-gradient(160deg, #fff5f7 0%, #ffffff 100%)',
+        borderColor: '#fecdd3',
+        topBorder: '#f43f5e',
+        badgeBg: '#ffe4e6',
+        badgeText: '#be123c',
+        badgeBorder: '#fecdd3',
+        subtotalColor: '#be123c'
+      },
+      {
+        name: 'Blueberry Lavender',
+        icon: '🫐',
+        cardBg: 'linear-gradient(160deg, #f5f3ff 0%, #ffffff 100%)',
+        borderColor: '#ddd6fe',
+        topBorder: '#8b5cf6',
+        badgeBg: '#ede9fe',
+        badgeText: '#6d28d9',
+        badgeBorder: '#ddd6fe',
+        subtotalColor: '#6d28d9'
+      },
+      {
+        name: 'Kiwi Mint',
+        icon: '🥝',
+        cardBg: 'linear-gradient(160deg, #f0fdf4 0%, #ffffff 100%)',
+        borderColor: '#bbf7d0',
+        topBorder: '#22c55e',
+        badgeBg: '#dcfce7',
+        badgeText: '#15803d',
+        badgeBorder: '#bbf7d0',
+        subtotalColor: '#15803d'
+      },
+      {
+        name: 'Honey Butter',
+        icon: '🍯',
+        cardBg: 'linear-gradient(160deg, #fffbeb 0%, #ffffff 100%)',
+        borderColor: '#fde68a',
+        topBorder: '#f59e0b',
+        badgeBg: '#fef3c7',
+        badgeText: '#b45309',
+        badgeBorder: '#fde68a',
+        subtotalColor: '#b45309'
+      },
+      {
+        name: 'Matcha Latte',
+        icon: '🍵',
+        cardBg: 'linear-gradient(160deg, #f0fdfa 0%, #ffffff 100%)',
+        borderColor: '#99f6e4',
+        topBorder: '#0d9488',
+        badgeBg: '#ccfbf1',
+        badgeText: '#0f766e',
+        badgeBorder: '#99f6e4',
+        subtotalColor: '#0f766e'
+      },
+      {
+        name: 'Peach Apricot',
+        icon: '🍑',
+        cardBg: 'linear-gradient(160deg, #fff7ed 0%, #ffffff 100%)',
+        borderColor: '#fed7aa',
+        topBorder: '#ea580c',
+        badgeBg: '#ffedd5',
+        badgeText: '#c2410c',
+        badgeBorder: '#fed7aa',
+        subtotalColor: '#c2410c'
+      },
+      {
+        name: 'Dark Choco',
+        icon: '🍫',
+        cardBg: 'linear-gradient(160deg, #fafaf9 0%, #ffffff 100%)',
+        borderColor: '#e7e5e4',
+        topBorder: '#78716c',
+        badgeBg: '#f5f5f4',
+        badgeText: '#44403c',
+        badgeBorder: '#e7e5e4',
+        subtotalColor: '#44403c'
+      },
+      {
+        name: 'Sweet Melon',
+        icon: '🍈',
+        cardBg: 'linear-gradient(160deg, #f7fee7 0%, #ffffff 100%)',
+        borderColor: '#d9f99d',
+        topBorder: '#84cc16',
+        badgeBg: '#ecfccb',
+        badgeText: '#4d7c0f',
+        badgeBorder: '#d9f99d',
+        subtotalColor: '#4d7c0f'
+      },
+      {
+        name: 'Fresh Yuzu',
+        icon: '🍊',
+        cardBg: 'linear-gradient(160deg, #fffdf0 0%, #ffffff 100%)',
+        borderColor: '#fef08a',
+        topBorder: '#eab308',
+        badgeBg: '#fef9c3',
+        badgeText: '#854d0e',
+        badgeBorder: '#fef08a',
+        subtotalColor: '#854d0e'
+      }
+    ];
+
+    // Render Cups
+    function renderCups() {
+      const container = document.getElementById('cupsContainer');
+      container.innerHTML = '';
+
+      cups.forEach((cup, index) => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+
+        const isFirst = cups.length === 1;
+        const baseObj = BASES.find(b => b.id === cup.baseId);
+        const isGrape = cup.baseId === 'grape';
+
+        // Calculate cup price
+        let extraToppingsCount = Math.max(0, cup.toppings.length - 2);
+        let cupPrice = baseObj ? (baseObj.price + (isGrape ? 0 : (extraToppingsCount * 10))) : 0;
+
+        const theme = CUP_THEMES[index % CUP_THEMES.length];
+        card.style.background = theme.cardBg;
+        card.style.borderColor = theme.borderColor;
+        card.style.borderTop = `4px solid ${theme.topBorder}`;
+
+        card.innerHTML = `
+        <div class="item-card-header" style="border-bottom: 1px solid ${theme.borderColor};">
+          <div class="item-cup-badge">
+            <span class="cup-badge-pill" style="background: ${theme.badgeBg}; color: ${theme.badgeText}; border: 1px solid ${theme.badgeBorder};">
+              <span>${theme.icon}</span>
+              <span>ถ้วยที่ ${index + 1}</span>
+            </span>
+          </div>
+          ${!isFirst ? `<button type="button" class="btn-delete-cup" onclick="removeCup(${cup.id})">✕ ลบถ้วยนี้</button>` : ''}
+        </div>
+
+        <!-- 1. Choose Base Yogurt -->
+        <div class="step-label">
+          <span>1. เลือกรสชาติโยเกิร์ต</span>
+          ${!baseObj ? `<span class="step-hint" style="color: #f43f5e; font-weight: 600;">* แตะเลือกรสชาติ</span>` : ''}
+        </div>
+        <div class="base-grid">
+          ${BASES.map(b => {
+            const isSoldOut = b.available === false;
+            return `
+            <div class="base-btn ${cup.baseId === b.id ? 'selected' : ''} ${isSoldOut ? 'out-of-stock' : ''}" onclick="selectBase(${cup.id}, '${b.id}')">
+              <div class="base-info">
+                <span>${b.emoji || '🍨'}</span>
+                <span>${b.name}</span>
+                ${isSoldOut ? '<span class="sold-out-badge">หมด</span>' : ''}
+              </div>
+              <div class="base-price">${isSoldOut ? 'หมด' : b.price + '.-'}</div>
+            </div>
+            `;
+          }).join('')}
+        </div>
+
+        ${!isGrape ? `
+          <!-- 2. Choose Toppings -->
+          <div class="step-label" style="margin-top: 14px;">
+            <span>2. เลือกท็อปปิ้ง</span>
+            <span class="step-hint">ฟรี 2 อย่างแรก (เกิน +10.-)</span>
+          </div>
+          <div class="toppings-grid">
+            ${TOPPINGS.map(t => {
+              const isSelected = cup.toppings.includes(t.id);
+              const isSoldOut = t.available === false;
+              let badgeHtml = '';
+              if (isSoldOut) {
+                badgeHtml = `<span class="topping-badge sold-out">หมด</span>`;
+              } else if (isSelected) {
+                const selectedIndex = cup.toppings.indexOf(t.id);
+                if (selectedIndex < 2) {
+                  badgeHtml = `<span class="topping-badge free">ฟรี</span>`;
+                } else {
+                  badgeHtml = `<span class="topping-badge extra">+10.-</span>`;
+                }
+              }
+              return `
+                <div class="topping-pill ${isSelected ? 'selected' : ''} ${isSoldOut ? 'out-of-stock' : ''}" onclick="toggleTopping(${cup.id}, '${t.id}')">
+                  <div class="topping-name">
+                    <span>${t.emoji || '✨'}</span>
+                    <span>${t.name}</span>
+                  </div>
+                  ${badgeHtml}
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- 3. Free Honey Option -->
+          <div class="honey-row">
+            <div class="honey-label">
+              <span>🍯</span>
+              <span>ราดน้ำผึ้งแท้ฟรี:</span>
+            </div>
+            <div class="honey-switch">
+              <button type="button" class="honey-btn ${cup.honey === 'free' ? 'active' : ''}" onclick="setHoney(${cup.id}, 'free')">รับน้ำผึ้งฟรี</button>
+              <button type="button" class="honey-btn ${cup.honey === 'no' ? 'active' : ''}" onclick="setHoney(${cup.id}, 'no')">ไม่รับ</button>
+            </div>
+          </div>
+        ` : `
+          <div style="background: rgba(255, 255, 255, 0.85); border: 1.5px dashed ${theme.borderColor}; border-radius: 12px; padding: 12px; margin-top: 10px; font-size: 0.85rem; color: #475569; text-align: center;">
+            🍇 องุ่นไชน์มัสแคท / องุ่นดำ คัดพิเศษ ยัดไส้กรีกโยเกิร์ตเต็มคำ ทานง่าย อร่อยฟิน!
+          </div>
+        `}
+
+        <div class="cup-subtotal" style="border-top: 1px dashed ${theme.borderColor};">
+          <span>ราคารายการนี้:</span>
+          <b style="color: ${theme.subtotalColor};">${baseObj ? `${cupPrice} บาท` : '0 บาท (รอเลือกรสชาติ)'}</b>
+        </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      document.getElementById('totalCupsCount').textContent = `(${cups.length} รายการ)`;
+      updateSummary();
+    }
+
+    function selectBase(cupId, baseId) {
+      const baseObj = BASES.find(b => b.id === baseId);
+      if (baseObj && baseObj.available === false) {
+        showToast(`⚠️ ขออภัยค่ะ "${baseObj.name}" สินค้าหมดชั่วคราว`);
+        return;
+      }
+      const cup = cups.find(c => c.id === cupId);
+      if (cup) {
+        cup.baseId = baseId;
+        renderCups();
+      }
+    }
+
+    function toggleTopping(cupId, toppingId) {
+      const topObj = TOPPINGS.find(t => t.id === toppingId);
+      if (topObj && topObj.available === false) {
+        showToast(`⚠️ ขออภัยค่ะ ท็อปปิ้ง "${topObj.name}" หมดชั่วคราว`);
+        return;
+      }
+      const cup = cups.find(c => c.id === cupId);
+      if (cup) {
+        const idx = cup.toppings.indexOf(toppingId);
+        if (idx > -1) {
+          cup.toppings.splice(idx, 1);
+        } else {
+          cup.toppings.push(toppingId);
+        }
+        renderCups();
+      }
+    }
+
+    function setHoney(cupId, honeyOption) {
+      const cup = cups.find(c => c.id === cupId);
+      if (cup) {
+        cup.honey = honeyOption;
+        renderCups();
+      }
+    }
+
+    function addCup() {
+      const newId = cups.length > 0 ? Math.max(...cups.map(c => c.id)) + 1 : 1;
+      cups.push({
+        id: newId,
+        baseId: null,
+        toppings: [],
+        honey: 'free'
+      });
+      renderCups();
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight - 250, behavior: 'smooth' });
+      }, 100);
+    }
+
+    function removeCup(cupId) {
+      if (cups.length <= 1) return;
+      cups = cups.filter(c => c.id !== cupId);
+      renderCups();
+    }
+
+    function setDate(dateStr) {
+      const input = document.getElementById('orderDate');
+      if (input.value === dateStr) {
+        input.value = '';
+        document.querySelectorAll('#datePresets .date-chip').forEach(c => c.classList.remove('active'));
+      } else {
+        input.value = dateStr;
+        document.querySelectorAll('#datePresets .date-chip').forEach(c => {
+          c.classList.toggle('active', c.textContent.trim() === dateStr);
+        });
+      }
+      updateSummary();
+    }
+
+    function setTime(timeStr) {
+      const input = document.getElementById('orderTime');
+      if (input.value === timeStr) {
+        input.value = '';
+        document.querySelectorAll('#timePresets .date-chip').forEach(c => c.classList.remove('active'));
+      } else {
+        input.value = timeStr;
+        document.querySelectorAll('#timePresets .date-chip').forEach(c => {
+          c.classList.toggle('active', c.getAttribute('onclick')?.includes(timeStr));
+        });
+      }
+      updateSummary();
+    }
+
+    function appendNote(noteStr) {
+      const input = document.getElementById('orderNote');
+      if (input.value.trim()) {
+        if (!input.value.includes(noteStr)) {
+          input.value += `, ${noteStr}`;
+        }
+      } else {
+        input.value = noteStr;
+      }
+      updateSummary();
+    }
+
+    document.getElementById('orderDate').addEventListener('input', () => {
+      document.querySelectorAll('#datePresets .date-chip').forEach(c => c.classList.remove('active'));
+      updateSummary();
+    });
+    document.getElementById('orderTime').addEventListener('input', () => {
+      document.querySelectorAll('#timePresets .date-chip').forEach(c => c.classList.remove('active'));
+      updateSummary();
+    });
+    document.getElementById('orderLocation').addEventListener('input', updateSummary);
+    document.getElementById('orderNote').addEventListener('input', updateSummary);
+
+    function generateSummaryText() {
+      const orderDate = document.getElementById('orderDate').value.trim();
+      const orderTime = document.getElementById('orderTime').value.trim();
+      const orderLocation = document.getElementById('orderLocation').value.trim();
+      const orderNote = document.getElementById('orderNote').value.trim();
+
+      const hasAnySelection = cups.some(c => c.baseId || c.toppings.length > 0) || orderDate || orderTime || orderLocation || orderNote;
+      if (!hasAnySelection) {
+        return {
+          text: '👉 กรุณาแตะเลือกรสชาติโยเกิร์ต และท็อปปิ้งด้านบน เพื่อดูสรุปรายการนะคะ ✨',
+          total: 0
+        };
+      }
+
+      let totalAmount = 0;
+      let lines = [];
+      lines.push('📋 สรุปรายการสั่งกรีกโยเกิร์ต');
+      lines.push('-------------------------------');
+
+      cups.forEach((cup, idx) => {
+        const baseObj = BASES.find(b => b.id === cup.baseId);
+        const isGrape = cup.baseId === 'grape';
+        let extraToppingsCount = Math.max(0, cup.toppings.length - 2);
+        let cupPrice = baseObj ? (baseObj.price + (isGrape ? 0 : (extraToppingsCount * 10))) : 0;
+        totalAmount += cupPrice;
+
+        const theme = CUP_THEMES[idx % CUP_THEMES.length];
+        if (isGrape) {
+          lines.push(`🍇 รายการที่ ${idx + 1}: ${baseObj.name} (${cupPrice}.-)`);
+        } else if (baseObj) {
+          lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: ${baseObj.name} (${cupPrice}.-)`);
+
+          if (cup.toppings.length > 0) {
+            const toppingNames = cup.toppings.map((tId, tIdx) => {
+              const topObj = TOPPINGS.find(t => t.id === tId);
+              const name = topObj ? topObj.name : tId;
+              return tIdx >= 2 ? `${name}(+10)` : name;
+            });
+            lines.push(`   • ท็อปปิ้ง: ${toppingNames.join(', ')}`);
+          } else {
+            lines.push(`   • ท็อปปิ้ง: ไม่ใส่ท็อปปิ้ง`);
+          }
+
+          lines.push(`   • น้ำผึ้ง: ${cup.honey === 'free' ? 'รับน้ำผึ้งแท้ฟรี 🍯' : 'ไม่รับน้ำผึ้ง'}`);
+        } else {
+          lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: (ยังไม่ได้เลือกรสชาติ)`);
+          if (cup.toppings.length > 0) {
+            const toppingNames = cup.toppings.map((tId, tIdx) => {
+              const topObj = TOPPINGS.find(t => t.id === tId);
+              const name = topObj ? topObj.name : tId;
+              return tIdx >= 2 ? `${name}(+10)` : name;
+            });
+            lines.push(`   • ท็อปปิ้ง: ${toppingNames.join(', ')}`);
+          }
+        }
+        lines.push('');
+      });
+
+      lines.push('-------------------------------');
+      lines.push(`📦 รวมทั้งหมด: ${cups.length} รายการ`);
+      lines.push(`💰 ยอดรวมทั้งสิ้น: ${totalAmount} บาท`);
+      if (orderDate) {
+        lines.push(`📅 วันที่ต้องการรับ: ${orderDate}`);
+      }
+      if (orderTime) {
+        lines.push(`⏰ เวลาที่สะดวกรับ: ${orderTime}`);
+      }
+      if (orderLocation) {
+        lines.push(`📍 ส่งที่ไหน / จุดนัดรับ: ${orderLocation}`);
+      }
+      if (orderNote) {
+        lines.push(`📝 หมายเหตุ: ${orderNote}`);
+      }
+
+      return { text: lines.join('\n'), total: totalAmount };
+    }
+
+    function updateSummary() {
+      const { text, total } = generateSummaryText();
+      document.getElementById('previewText').textContent = text;
+      document.getElementById('bottomTotalAmount').textContent = `${total} ฿`;
+      document.getElementById('bottomItemsLabel').textContent = `รวม ${cups.length} รายการ`;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3200);
+    }
+
+    function copyAndFinishOrder() {
+      const unselectedIdx = cups.findIndex(c => !c.baseId);
+      if (unselectedIdx !== -1) {
+        showToast(`⚠️ กรุณาแตะเลือกรสชาติโยเกิร์ตใน ถ้วยที่ ${unselectedIdx + 1} ก่อนนะคะ`);
+        const allCards = document.querySelectorAll('.item-card');
+        if (allCards[unselectedIdx]) {
+          allCards[unselectedIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+
+      const { text } = generateSummaryText();
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('📋 คัดลอกรายการสั่งซื้อเรียบร้อย! ส่งในแชทให้ร้านได้เลยค่ะ');
+        }).catch(() => {
+          fallbackCopy(text);
+        });
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.top = '0';
+      textArea.style.left = '0';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast('📋 คัดลอกรายการสั่งซื้อเรียบร้อย! ส่งในแชทได้เลยค่ะ');
+      } catch (err) {
+        alert('กรุณาคัดลอกข้อความในช่องตัวอย่างแล้วส่งในแชทนะคะ');
+      }
+      document.body.removeChild(textArea);
+    }
+
+    // --- Cloud Sync & Menu Loading ---
+    async function loadMenuFromCloud() {
+      const repo = localStorage.getItem('yogurt_github_repo') || 'fireworkz6992-cloud/greekyogurt';
+      const cacheBuster = Date.now();
+      const urls = [
+        `https://raw.githubusercontent.com/${repo}/main/menu.json?t=${cacheBuster}`,
+        `./menu.json?t=${cacheBuster}`
+      ];
+
+      for (const url of urls) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data.bases) && Array.isArray(data.toppings)) {
+              BASES = data.bases;
+              TOPPINGS = data.toppings;
+              localStorage.setItem('yogurt_custom_bases', JSON.stringify(BASES));
+              localStorage.setItem('yogurt_custom_toppings', JSON.stringify(TOPPINGS));
+              renderCups();
+              console.log('✅ โหลดเมนูล่าสุดจาก Cloud เรียบร้อย:', url);
+              break;
+            }
+          }
+        } catch (e) {
+          // ignore & try next url
+        }
+      }
+    }
+
+    // --- Admin Functions (PIN: 3112) ---
+    function promptAdminPassword() {
+      document.getElementById('adminPassInput').value = '';
+      document.getElementById('adminPassError').style.display = 'none';
+      document.getElementById('adminLoginModal').classList.add('open');
+      setTimeout(() => { document.getElementById('adminPassInput').focus(); }, 150);
+    }
+
+    function closeAdminLogin() {
+      document.getElementById('adminLoginModal').classList.remove('open');
+    }
+
+    function submitAdminPass() {
+      const val = document.getElementById('adminPassInput').value.trim();
+      if (val === '3112') {
+        closeAdminLogin();
+        openAdminPanel();
+      } else {
+        document.getElementById('adminPassError').style.display = 'block';
+      }
+    }
+
+    function openAdminPanel() {
+      tempBases = JSON.parse(JSON.stringify(BASES));
+      tempToppings = JSON.parse(JSON.stringify(TOPPINGS));
+      document.getElementById('adminPanelModal').classList.add('open');
+      renderAdminPanel();
+    }
+
+    function closeAdminPanel() {
+      document.getElementById('adminPanelModal').classList.remove('open');
+    }
+
+    function switchAdminTab(tab) {
+      currentAdminTab = tab;
+      document.getElementById('tabBtnBases').classList.toggle('active', tab === 'bases');
+      document.getElementById('tabBtnToppings').classList.toggle('active', tab === 'toppings');
+      document.getElementById('tabBtnCloud').classList.toggle('active', tab === 'cloud');
+      renderAdminPanel();
+    }
+
+    function renderAdminPanel() {
+      const body = document.getElementById('adminBody');
+      body.innerHTML = '';
+
+      if (currentAdminTab === 'bases') {
+        let html = '<div style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">🍨 จัดการรสชาติโยเกิร์ต (แก้ไขชื่อ, ราคา, เปิด/ปิดของหมด หรือลบ):</div>';
+
+        tempBases.forEach((b, idx) => {
+          const isAvailable = b.available !== false;
+          html += `
+            <div class="admin-item-row">
+              <div class="admin-item-info">
+                <input type="text" class="admin-input-emoji" value="${b.emoji || '🍨'}" onchange="tempBases[${idx}].emoji = this.value">
+                <input type="text" class="admin-input-name" value="${b.name}" onchange="tempBases[${idx}].name = this.value">
+                <input type="number" class="admin-input-price" value="${b.price}" onchange="tempBases[${idx}].price = Number(this.value)">
+                <span style="font-size: 0.8rem; color: #64748b;">฿</span>
+              </div>
+              <div class="admin-actions">
+                <button type="button" class="btn-toggle-stock ${isAvailable ? 'in-stock' : 'out-of-stock'}" onclick="tempBases[${idx}].available = !${isAvailable}; renderAdminPanel();">
+                  ${isAvailable ? '✅ มีของ' : '❌ หมด'}
+                </button>
+                ${tempBases.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบรสชาตินี้ใช่หรือไม่?')){ tempBases.splice(${idx}, 1); renderAdminPanel(); }" title="ลบรสชาตินี้">🗑️</button>` : ''}
+              </div>
+            </div>
+          `;
+        });
+
+        html += `
+          <div class="admin-add-box">
+            <div class="admin-add-title">➕ เพิ่มรสชาติโยเกิร์ตใหม่:</div>
+            <div class="admin-add-form">
+              <input type="text" id="newBaseEmoji" class="admin-input-emoji" value="🍨" placeholder="ไอคอน">
+              <input type="text" id="newBaseName" class="admin-input-name" placeholder="ชื่อรสชาติ (เช่น กรีกโยเกิร์ต มัทฉะ)">
+              <input type="number" id="newBasePrice" class="admin-input-price" placeholder="ราคา" value="69">
+              <button type="button" class="btn-add-submit" onclick="addNewBase()">+ เพิ่ม</button>
+            </div>
+          </div>
+        `;
+        body.innerHTML = html;
+      } else if (currentAdminTab === 'toppings') {
+        let html = '<div style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">🍓 จัดการท็อปปิ้ง (แก้ไขชื่อ, เปิด/ปิดของหมด หรือลบ):</div>';
+
+        tempToppings.forEach((t, idx) => {
+          const isAvailable = t.available !== false;
+          html += `
+            <div class="admin-item-row">
+              <div class="admin-item-info">
+                <input type="text" class="admin-input-emoji" value="${t.emoji || '✨'}" onchange="tempToppings[${idx}].emoji = this.value">
+                <input type="text" class="admin-input-name" value="${t.name}" onchange="tempToppings[${idx}].name = this.value">
+              </div>
+              <div class="admin-actions">
+                <button type="button" class="btn-toggle-stock ${isAvailable ? 'in-stock' : 'out-of-stock'}" onclick="tempToppings[${idx}].available = !${isAvailable}; renderAdminPanel();">
+                  ${isAvailable ? '✅ มีของ' : '❌ หมด'}
+                </button>
+                ${tempToppings.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบท็อปปิ้งนี้ใช่หรือไม่?')){ tempToppings.splice(${idx}, 1); renderAdminPanel(); }" title="ลบท็อปปิ้งนี้">🗑️</button>` : ''}
+              </div>
+            </div>
+          `;
+        });
+
+        html += `
+          <div class="admin-add-box">
+            <div class="admin-add-title">➕ เพิ่มท็อปปิ้งใหม่:</div>
+            <div class="admin-add-form">
+              <input type="text" id="newTopEmoji" class="admin-input-emoji" value="✨" placeholder="ไอคอน">
+              <input type="text" id="newTopName" class="admin-input-name" placeholder="ชื่อท็อปปิ้ง (เช่น มะม่วงสุก, อัลมอนด์)">
+              <button type="button" class="btn-add-submit" onclick="addNewTopping()">+ เพิ่ม</button>
+            </div>
+          </div>
+        `;
+        body.innerHTML = html;
+      } else if (currentAdminTab === 'cloud') {
+        const savedToken = localStorage.getItem('yogurt_github_token') || '';
+        const savedRepo = localStorage.getItem('yogurt_github_repo') || 'fireworkz6992-cloud/greekyogurt';
+        const isConnected = !!savedToken;
+
+        let html = `
+          <div class="cloud-status-card ${isConnected ? 'connected' : 'disconnected'}">
+            <span>${isConnected ? '🟢' : '🟡'}</span>
+            <div>
+              <b>${isConnected ? 'เชื่อมต่อ Cloud สำเร็จแล้ว' : 'ยังไม่ได้เชื่อมต่อ GitHub Token'}</b>
+              <div style="font-size: 0.78rem; opacity: 0.85;">${isConnected ? 'เมื่อกดปุ่มบันทึก ระบบจะส่งข้อมูลไปอัปเดตบนเว็บให้ลูกค้าทุกคนอัตโนมัติ' : 'ขณะนี้ระบบจะบันทึกเฉพาะในเครื่องนี้ หากต้องการให้อัปเดตขึ้นเว็บ ใส่ Token ด้านล่าง 1 ครั้งค่ะ'}</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.82rem;">📦 GitHub Repository:</label>
+            <input type="text" id="cfgGithubRepo" class="form-input" value="${savedRepo}">
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label class="form-label" style="font-size: 0.82rem;">🔑 GitHub Personal Access Token (PAT):</label>
+            <div style="display: flex; gap: 6px;">
+              <input type="password" id="cfgGithubToken" class="form-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" value="${savedToken}">
+              <button type="button" class="btn-reset-admin" onclick="toggleTokenVisibility()" style="padding: 0 10px;" title="ดูรหัส">👁️</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+            <button type="button" class="btn-save-admin" style="padding: 8px 14px; font-size: 0.85rem;" onclick="saveCloudSettings()">
+              💾 บันทึกการเชื่อมต่อ Cloud
+            </button>
+            ${savedToken ? `<button type="button" class="btn-reset-admin" onclick="clearCloudSettings()">ตัดการเชื่อมต่อ</button>` : ''}
+          </div>
+
+          <div class="cloud-guide-box">
+            <div class="cloud-guide-title">
+              <span>📖</span>
+              <span>วิธีสร้าง GitHub Token ง่ายๆ ใน 1 นาที (ทำครั้งเดียว):</span>
+            </div>
+            <ol style="padding-left: 20px; margin-bottom: 8px;">
+              <li>กดปุ่มด้านล่างเพื่อเปิดหน้าสร้าง Token ใน GitHub:</li>
+            </ol>
+            <div style="text-align: center;">
+              <a href="https://github.com/settings/tokens/new?scopes=repo&description=GreekYogurt_Admin" target="_blank" class="btn-open-token">
+                🔑 แตะเปิดหน้าสร้าง GitHub Token ↗
+              </a>
+            </div>
+            <ol start="2" style="padding-left: 20px;">
+              <li>ในหน้าเว็บ GitHub เลื่อนลงล่างสุด แล้วกดปุ่มสีเขียว <b>"Generate token"</b></li>
+              <li>กดปุ่มไอคอน ก็อปปี้รหัส (ที่ขึ้นต้นด้วย <code>ghp_...</code>)</li>
+              <li>นำรหัสมาวางในช่อง <b>"GitHub Personal Access Token"</b> ด้านบน</li>
+              <li>กดปุ่ม <b>"💾 บันทึกการเชื่อมต่อ Cloud"</b> เป็นอันเสร็จสิ้นค่ะ! 🎉</li>
+            </ol>
+          </div>
+        `;
+        body.innerHTML = html;
+      }
+    }
+
+    function toggleTokenVisibility() {
+      const input = document.getElementById('cfgGithubToken');
+      if (input) {
+        input.type = input.type === 'password' ? 'text' : 'password';
+      }
+    }
+
+    async function saveCloudSettings() {
+      const repo = document.getElementById('cfgGithubRepo').value.trim() || 'fireworkz6992-cloud/greekyogurt';
+      const token = document.getElementById('cfgGithubToken').value.trim();
+
+      if (!token) {
+        alert('กรุณากรอกรหัส GitHub Token ค่ะ');
+        return;
+      }
+
+      // Test token with GitHub API
+      showToast('⏳ กำลังตรวจสอบการเชื่อมต่อกับ GitHub...');
+      try {
+        const res = await fetch(`https://api.github.com/repos/${repo}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        });
+
+        if (res.ok) {
+          localStorage.setItem('yogurt_github_repo', repo);
+          localStorage.setItem('yogurt_github_token', token);
+          renderAdminPanel();
+          showToast('✅ เชื่อมต่อ GitHub สำเร็จแล้ว! พร้อมใช้งานระบบ Cloud Sync');
+        } else {
+          const err = await res.json();
+          alert(`❌ เชื่อมต่อไม่สำเร็จ: ${err.message || 'รหัส Token ไม่ถูกต้อง'}\nกรุณาตรวจสอบว่ามีสิทธิ์ repo หรือไม่ค่ะ`);
+        }
+      } catch (err) {
+        alert(`❌ ไม่สามารถเชื่อมต่อกับ GitHub ได้: ${err.message}`);
+      }
+    }
+
+    function clearCloudSettings() {
+      if (confirm('คุณต้องการตัดการเชื่อมต่อ GitHub ใช่หรือไม่?')) {
+        localStorage.removeItem('yogurt_github_token');
+        renderAdminPanel();
+        showToast('ตัดการเชื่อมต่อเรียบร้อย');
+      }
+    }
+
+    function addNewBase() {
+      const name = document.getElementById('newBaseName').value.trim();
+      const emoji = document.getElementById('newBaseEmoji').value.trim() || '🍨';
+      const price = Number(document.getElementById('newBasePrice').value) || 69;
+      if (!name) {
+        alert('กรุณาใส่ชื่อรสชาติโยเกิร์ตค่ะ');
+        return;
+      }
+      const id = 'base_' + Date.now();
+      tempBases.push({ id, name, price, emoji, available: true });
+      renderAdminPanel();
+    }
+
+    function addNewTopping() {
+      const name = document.getElementById('newTopName').value.trim();
+      const emoji = document.getElementById('newTopEmoji').value.trim() || '✨';
+      if (!name) {
+        alert('กรุณาใส่ชื่อท็อปปิ้งค่ะ');
+        return;
+      }
+      const id = 'top_' + Date.now();
+      tempToppings.push({ id, name, emoji, available: true });
+      renderAdminPanel();
+    }
+
+    // Sync menu data to GitHub repository
+    async function syncToGitHub(menuData) {
+      const repo = localStorage.getItem('yogurt_github_repo') || 'fireworkz6992-cloud/greekyogurt';
+      const token = localStorage.getItem('yogurt_github_token');
+
+      if (!token) {
+        return { success: false, noToken: true };
+      }
+
+      const filePath = 'menu.json';
+      const apiUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
+
+      try {
+        // 1. Get current SHA if file exists
+        let sha = null;
+        const getRes = await fetch(apiUrl, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        });
+
+        if (getRes.ok) {
+          const fileInfo = await getRes.json();
+          sha = fileInfo.sha;
+        }
+
+        // 2. Base64 encode JSON with UTF-8 support
+        const jsonString = JSON.stringify(menuData, null, 2);
+        const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
+
+        // 3. PUT commit to GitHub
+        const putBody = {
+          message: `Update menu catalog via Admin Panel (${new Date().toLocaleTimeString('th-TH')}) [skip ci]`,
+          content: encodedContent
+        };
+        if (sha) putBody.sha = sha;
+
+        const putRes = await fetch(apiUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify(putBody)
+        });
+
+        if (putRes.ok) {
+          return { success: true };
+        } else {
+          const errData = await putRes.json();
+          return { success: false, error: errData.message || 'Unknown error' };
+        }
+      } catch (err) {
+        return { success: false, error: err.message };
+      }
+    }
+
+    async function saveAdminChanges() {
+      const btnSave = document.getElementById('btnSaveAdmin');
+      const originalText = btnSave.innerHTML;
+
+      BASES = JSON.parse(JSON.stringify(tempBases));
+      TOPPINGS = JSON.parse(JSON.stringify(tempToppings));
+
+      // Save locally
+      localStorage.setItem('yogurt_custom_bases', JSON.stringify(BASES));
+      localStorage.setItem('yogurt_custom_toppings', JSON.stringify(TOPPINGS));
+
+      // Clean up cups if any selected item became unavailable
+      cups.forEach(c => {
+        const b = BASES.find(base => base.id === c.baseId);
+        if (b && b.available === false) c.baseId = null;
+        c.toppings = c.toppings.filter(tId => {
+          const t = TOPPINGS.find(top => top.id === tId);
+          return t && t.available !== false;
+        });
+      });
+
+      renderCups();
+
+      const menuPayload = {
+        updatedAt: Date.now(),
+        bases: BASES,
+        toppings: TOPPINGS
+      };
+
+      const token = localStorage.getItem('yogurt_github_token');
+      if (token) {
+        btnSave.disabled = true;
+        btnSave.innerHTML = '<span>⏳ กำลังบันทึกขึ้น Cloud...</span>';
+
+        const result = await syncToGitHub(menuPayload);
+        btnSave.disabled = false;
+        btnSave.innerHTML = originalText;
+
+        if (result.success) {
+          closeAdminPanel();
+          showToast('✅ บันทึกขึ้น Cloud สำเร็จแล้ว! ลูกค้าทุกคนเห็นเมนูล่าสุดทันที 🎉');
+        } else {
+          alert(`⚠️ บันทึกในเครื่องแล้ว แต่ส่งขึ้น Cloud ไม่สำเร็จ: ${result.error}\nกรุณาตรวจเช็ค GitHub Token ในแท็บตั้งค่า Cloud ค่ะ`);
+        }
+      } else {
+        closeAdminPanel();
+        showToast('💾 บันทึกในเครื่องเรียบร้อยแล้วค่ะ!');
+      }
+    }
+
+    function resetAdminToDefault() {
+      if (confirm('คุณต้องการรีเซ็ตเมนูและราคาทั้งหมดกลับเป็นค่าเริ่มต้นใช่หรือไม่?')) {
+        localStorage.removeItem('yogurt_custom_bases');
+        localStorage.removeItem('yogurt_custom_toppings');
+        BASES = JSON.parse(JSON.stringify(DEFAULT_BASES));
+        TOPPINGS = JSON.parse(JSON.stringify(DEFAULT_TOPPINGS));
+        tempBases = JSON.parse(JSON.stringify(BASES));
+        tempToppings = JSON.parse(JSON.stringify(TOPPINGS));
+        renderAdminPanel();
+        renderCups();
+        showToast('🔄 คืนค่าเมนูเริ่มต้นเรียบร้อยแล้ว');
+      }
+    }
+
+    // Initialize Page
+    renderCups();
+    loadMenuFromCloud();
+  </script>
+
+</body>
+
+</html>
