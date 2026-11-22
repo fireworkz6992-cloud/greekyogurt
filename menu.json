@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1795373010600,
+  "updatedAt": 1795375628015,
   "bases": [
     {
       "id": "plain",
@@ -29,19 +29,19 @@
       "id": "banana",
       "name": "กล้วยหอม",
       "emoji": "🍌",
-      "available": true
+      "available": false
     },
     {
       "id": "strawberry",
       "name": "สตรอว์เบอร์รี่",
       "emoji": "🍓",
-      "available": true
+      "available": false
     },
     {
       "id": "blueberry",
       "name": "บลูเบอร์รี่",
       "emoji": "🫐",
-      "available": true
+      "available": false
     },
     {
       "id": "kiwi",
