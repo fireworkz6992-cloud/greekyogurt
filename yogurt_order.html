@@ -1693,27 +1693,27 @@
         totalAmount += cupPrice;
 
         const theme = CUP_THEMES[idx % CUP_THEMES.length];
-        if (isGrape) {
-          lines.push(`🍇 รายการที่ ${idx + 1}: ${baseObj.name} (${cupPrice}.-)`);
-        } else if (baseObj) {
+        if (baseObj) {
           lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: ${baseObj.name} (${cupPrice}.-)`);
 
-          if (cup.toppings.length > 0) {
-            const counts = {};
-            cup.toppings.forEach(tId => { counts[tId] = (counts[tId] || 0) + 1; });
-            const toppingList = Object.entries(counts).map(([tId, count]) => {
-              const topObj = TOPPINGS.find(t => t.id === tId);
-              const name = topObj ? topObj.name : tId;
-              return count > 1 ? `${name} (x${count})` : name;
-            });
-            const extraCount = Math.max(0, cup.toppings.length - 2);
-            const extraTag = extraCount > 0 ? ` [เพิ่ม ${extraCount} อย่าง +${extraCount * 10}.-]` : ' [ฟรี 2 อย่าง]';
-            lines.push(`   • ท็อปปิ้ง: ${toppingList.join(', ')}${extraTag}`);
-          } else {
-            lines.push(`   • ท็อปปิ้ง: ไม่ใส่ท็อปปิ้ง`);
-          }
+          if (!isGrape) {
+            if (cup.toppings.length > 0) {
+              const counts = {};
+              cup.toppings.forEach(tId => { counts[tId] = (counts[tId] || 0) + 1; });
+              const toppingList = Object.entries(counts).map(([tId, count]) => {
+                const topObj = TOPPINGS.find(t => t.id === tId);
+                const name = topObj ? topObj.name : tId;
+                return count > 1 ? `${name} (x${count})` : name;
+              });
+              const extraCount = Math.max(0, cup.toppings.length - 2);
+              const extraTag = extraCount > 0 ? ` [เพิ่ม ${extraCount} อย่าง +${extraCount * 10}.-]` : ' [ฟรี 2 อย่าง]';
+              lines.push(`   • ท็อปปิ้ง: ${toppingList.join(', ')}${extraTag}`);
+            } else {
+              lines.push(`   • ท็อปปิ้ง: ไม่ใส่ท็อปปิ้ง`);
+            }
 
-          lines.push(`   • น้ำผึ้ง: ${cup.honey === 'free' ? 'รับน้ำผึ้งแท้ฟรี 🍯' : 'ไม่รับน้ำผึ้ง'}`);
+            lines.push(`   • น้ำผึ้ง: ${cup.honey === 'free' ? 'รับน้ำผึ้งแท้ฟรี 🍯' : 'ไม่รับน้ำผึ้ง'}`);
+          }
         } else {
           lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: (ยังไม่ได้เลือกรสชาติ)`);
           if (cup.toppings.length > 0) {
