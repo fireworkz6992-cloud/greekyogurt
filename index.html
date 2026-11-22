@@ -479,10 +479,18 @@
       padding: 16px;
       margin-bottom: 16px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
     }
 
     .form-group {
       margin-bottom: 10px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
     }
 
     .form-group:last-child {
@@ -499,7 +507,10 @@
     }
 
     .form-input {
-      width: 100%;
+      display: block;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
       border: 1.5px solid #e2e8f0;
       border-radius: 10px;
       padding: 9px 12px;
@@ -509,6 +520,28 @@
       background: #f8fafc;
       transition: border-color 0.15s ease;
       outline: none;
+    }
+
+    /* Fix iOS / WebKit native date picker blowing out of card */
+    input[type="date"].form-input {
+      display: block;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      min-height: 42px;
+      text-align: center;
+      background-color: #f8fafc;
+    }
+
+    input[type="date"].form-input::-webkit-date-and-time-value {
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      width: 100%;
     }
 
     .form-input:focus {
@@ -788,37 +821,44 @@
       display: flex;
       background: #f8fafc;
       border-bottom: 1px solid #e2e8f0;
-      padding: 8px 12px 0 12px;
-      gap: 6px;
+      padding: 8px 10px 0 10px;
+      gap: 4px;
       overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .admin-tabs::-webkit-scrollbar {
+      display: none;
     }
 
     .admin-tab-btn {
-      padding: 8px 14px;
+      padding: 7px 11px;
       border: 1px solid transparent;
       border-bottom: none;
       background: transparent;
       font-family: var(--font-kanit);
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       font-weight: 600;
       color: #64748b;
       cursor: pointer;
       border-radius: 8px 8px 0 0;
       transition: all 0.15s ease;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .admin-tab-btn.active {
       background: #ffffff;
       color: #be123c;
       border-color: #e2e8f0;
-      border-bottom-color: #ffffff;
+      border-bottom: 1px solid #ffffff;
       margin-bottom: -1px;
     }
 
     .admin-body {
-      padding: 16px;
+      padding: 12px;
       overflow-y: auto;
+      overflow-x: hidden;
       flex: 1;
     }
 
@@ -827,38 +867,58 @@
       border: 1px solid #e2e8f0;
       border-radius: 12px;
       padding: 10px 12px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .admin-item-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .admin-item-bottom {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      width: 100%;
+      padding-top: 6px;
+      border-top: 1px dashed #e2e8f0;
     }
 
-    .admin-item-info {
+    .admin-price-box {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex: 1;
+      gap: 4px;
     }
 
     .admin-input-emoji {
-      width: 38px;
-      height: 36px;
-      font-size: 1.15rem;
+      width: 36px;
+      height: 34px;
+      font-size: 1.1rem;
       text-align: center;
       border: 1px solid #cbd5e1;
       border-radius: 8px;
       background: #ffffff;
       outline: none;
+      flex-shrink: 0;
     }
 
     .admin-input-name {
       flex: 1;
-      padding: 6px 10px;
+      min-width: 0;
+      padding: 6px 8px;
       border: 1px solid #cbd5e1;
       border-radius: 8px;
       font-family: var(--font-thai);
-      font-size: 0.86rem;
+      font-size: 0.84rem;
       outline: none;
     }
 
@@ -869,8 +929,8 @@
     }
 
     .admin-input-price {
-      width: 60px;
-      padding: 6px 6px;
+      width: 62px;
+      padding: 5px 6px;
       border: 1px solid #cbd5e1;
       border-radius: 8px;
       font-family: var(--font-kanit);
@@ -888,7 +948,7 @@
 
     .btn-toggle-stock {
       border: none;
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 8px;
       font-family: var(--font-kanit);
       font-size: 0.78rem;
@@ -899,6 +959,7 @@
       gap: 4px;
       transition: all 0.15s ease;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .btn-toggle-stock.in-stock {
@@ -1135,7 +1196,7 @@
     <div class="extra-card">
       <div class="form-group">
         <label class="form-label" for="orderDate">📅 วันที่ต้องการรับสินค้า:</label>
-        <input type="date" id="orderDate" class="form-input" style="font-weight: 600; cursor: pointer;">
+        <input type="date" id="orderDate" class="form-input" style="font-weight: 600; cursor: pointer; text-align: center; width: 100%; max-width: 100%; box-sizing: border-box;">
         <div class="date-presets" id="datePresets">
           <!-- Dynamically populated chips: วันนี้, พรุ่งนี้, มะรืนนี้ ... -->
         </div>
@@ -1214,9 +1275,9 @@
         <button type="button" class="btn-close-admin" onclick="closeAdminPanel()">✕</button>
       </div>
       <div class="admin-tabs">
-        <button type="button" class="admin-tab-btn active" id="tabBtnBases" onclick="switchAdminTab('bases')">🍨 รสชาติโยเกิร์ต</button>
+        <button type="button" class="admin-tab-btn active" id="tabBtnBases" onclick="switchAdminTab('bases')">🍨 รสชาติ</button>
         <button type="button" class="admin-tab-btn" id="tabBtnToppings" onclick="switchAdminTab('toppings')">🍓 ท็อปปิ้ง</button>
-        <button type="button" class="admin-tab-btn" id="tabBtnCloud" onclick="switchAdminTab('cloud')">☁️ เชื่อมต่อ Cloud (GitHub)</button>
+        <button type="button" class="admin-tab-btn" id="tabBtnCloud" onclick="switchAdminTab('cloud')">☁️ Cloud</button>
       </div>
       <div class="admin-body" id="adminBody">
         <!-- Generated by JS -->
@@ -1992,27 +2053,30 @@
       }
       const tabBtnCloud = document.getElementById('tabBtnCloud');
       if (tabBtnCloud) {
-        tabBtnCloud.innerHTML = hasCloudToken ? '☁️ Cloud (เชื่อมต่อแล้ว 🟢)' : '☁️ เชื่อมต่อ Cloud (🟡 ยังไม่ต่อ)';
+        tabBtnCloud.innerHTML = hasCloudToken ? '☁️ Cloud 🟢' : '☁️ Cloud 🟡';
       }
 
       if (currentAdminTab === 'bases') {
-        let html = '<div style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">🍨 จัดการรสชาติโยเกิร์ต (แก้ไขชื่อ, ราคา, เปิด/ปิดของหมด หรือลบ):</div>';
+        let html = '<div style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;">🍨 จัดการรสชาติโยเกิร์ต (แก้ไขชื่อ, ราคา, เปิด/ปิดของหมด หรือลบ):</div>';
 
         tempBases.forEach((b, idx) => {
           const isAvailable = b.available !== false;
           html += `
             <div class="admin-item-row">
-              <div class="admin-item-info">
+              <div class="admin-item-top">
                 <input type="text" class="admin-input-emoji" value="${b.emoji || '🍨'}" oninput="tempBases[${idx}].emoji = this.value">
-                <input type="text" class="admin-input-name" value="${b.name}" oninput="tempBases[${idx}].name = this.value">
-                <input type="number" class="admin-input-price" value="${b.price}" oninput="tempBases[${idx}].price = Number(this.value)">
-                <span style="font-size: 0.8rem; color: #64748b;">฿</span>
+                <input type="text" class="admin-input-name" value="${b.name}" oninput="tempBases[${idx}].name = this.value" placeholder="ชื่อรสชาติ">
+                ${tempBases.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบรสชาตินี้ใช่หรือไม่?')){ tempBases.splice(${idx}, 1); renderAdminPanel(); }" title="ลบรสชาตินี้">🗑️</button>` : ''}
               </div>
-              <div class="admin-actions">
+              <div class="admin-item-bottom">
+                <div class="admin-price-box">
+                  <span style="font-size: 0.8rem; color: #64748b; font-weight: 500;">ราคา:</span>
+                  <input type="number" class="admin-input-price" value="${b.price}" oninput="tempBases[${idx}].price = Number(this.value)">
+                  <span style="font-size: 0.8rem; color: #64748b; font-weight: 500;">฿</span>
+                </div>
                 <button type="button" class="btn-toggle-stock ${isAvailable ? 'in-stock' : 'out-of-stock'}" onclick="toggleAdminBaseStock(${idx})">
                   ${isAvailable ? '✅ มีของ' : '❌ หมด'}
                 </button>
-                ${tempBases.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบรสชาตินี้ใช่หรือไม่?')){ tempBases.splice(${idx}, 1); renderAdminPanel(); }" title="ลบรสชาตินี้">🗑️</button>` : ''}
               </div>
             </div>
           `;
@@ -2022,30 +2086,39 @@
           <div class="admin-add-box">
             <div class="admin-add-title">➕ เพิ่มรสชาติโยเกิร์ตใหม่:</div>
             <div class="admin-add-form">
-              <input type="text" id="newBaseEmoji" class="admin-input-emoji" value="🍨" placeholder="ไอคอน">
-              <input type="text" id="newBaseName" class="admin-input-name" placeholder="ชื่อรสชาติ (เช่น กรีกโยเกิร์ต มัทฉะ)">
-              <input type="number" id="newBasePrice" class="admin-input-price" placeholder="ราคา" value="69">
-              <button type="button" class="btn-add-submit" onclick="addNewBase()">+ เพิ่ม</button>
+              <div style="display: flex; gap: 6px; width: 100%;">
+                <input type="text" id="newBaseEmoji" class="admin-input-emoji" value="🍨" placeholder="ไอคอน">
+                <input type="text" id="newBaseName" class="admin-input-name" placeholder="ชื่อรสชาติ (เช่น กรีกโยเกิร์ต มัทฉะ)">
+              </div>
+              <div style="display: flex; gap: 8px; width: 100%; align-items: center; justify-content: space-between; margin-top: 6px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <span style="font-size: 0.8rem; color: #64748b;">ราคา:</span>
+                  <input type="number" id="newBasePrice" class="admin-input-price" placeholder="ราคา" value="69">
+                  <span style="font-size: 0.8rem; color: #64748b;">฿</span>
+                </div>
+                <button type="button" class="btn-add-submit" onclick="addNewBase()">+ เพิ่มรายการ</button>
+              </div>
             </div>
           </div>
         `;
         body.innerHTML = html;
       } else if (currentAdminTab === 'toppings') {
-        let html = '<div style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">🍓 จัดการท็อปปิ้ง (แก้ไขชื่อ, เปิด/ปิดของหมด หรือลบ):</div>';
+        let html = '<div style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;">🍓 จัดการท็อปปิ้ง (แก้ไขชื่อ, เปิด/ปิดของหมด หรือลบ):</div>';
 
         tempToppings.forEach((t, idx) => {
           const isAvailable = t.available !== false;
           html += `
             <div class="admin-item-row">
-              <div class="admin-item-info">
+              <div class="admin-item-top">
                 <input type="text" class="admin-input-emoji" value="${t.emoji || '✨'}" oninput="tempToppings[${idx}].emoji = this.value">
-                <input type="text" class="admin-input-name" value="${t.name}" oninput="tempToppings[${idx}].name = this.value">
+                <input type="text" class="admin-input-name" value="${t.name}" oninput="tempToppings[${idx}].name = this.value" placeholder="ชื่อท็อปปิ้ง">
+                ${tempToppings.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบท็อปปิ้งนี้ใช่หรือไม่?')){ tempToppings.splice(${idx}, 1); renderAdminPanel(); }" title="ลบท็อปปิ้งนี้">🗑️</button>` : ''}
               </div>
-              <div class="admin-actions">
+              <div class="admin-item-bottom">
+                <span style="font-size: 0.8rem; color: #64748b; font-weight: 500;">สถานะท็อปปิ้ง:</span>
                 <button type="button" class="btn-toggle-stock ${isAvailable ? 'in-stock' : 'out-of-stock'}" onclick="toggleAdminToppingStock(${idx})">
                   ${isAvailable ? '✅ มีของ' : '❌ หมด'}
                 </button>
-                ${tempToppings.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบท็อปปิ้งนี้ใช่หรือไม่?')){ tempToppings.splice(${idx}, 1); renderAdminPanel(); }" title="ลบท็อปปิ้งนี้">🗑️</button>` : ''}
               </div>
             </div>
           `;
@@ -2055,9 +2128,11 @@
           <div class="admin-add-box">
             <div class="admin-add-title">➕ เพิ่มท็อปปิ้งใหม่:</div>
             <div class="admin-add-form">
-              <input type="text" id="newTopEmoji" class="admin-input-emoji" value="✨" placeholder="ไอคอน">
-              <input type="text" id="newTopName" class="admin-input-name" placeholder="ชื่อท็อปปิ้ง (เช่น มะม่วงสุก, อัลมอนด์)">
-              <button type="button" class="btn-add-submit" onclick="addNewTopping()">+ เพิ่ม</button>
+              <div style="display: flex; gap: 6px; width: 100%;">
+                <input type="text" id="newTopEmoji" class="admin-input-emoji" value="✨" placeholder="ไอคอน">
+                <input type="text" id="newTopName" class="admin-input-name" placeholder="ชื่อท็อปปิ้ง (เช่น มะม่วงสุก, อัลมอนด์)">
+                <button type="button" class="btn-add-submit" onclick="addNewTopping()">+ เพิ่ม</button>
+              </div>
             </div>
           </div>
         `;
