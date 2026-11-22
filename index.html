@@ -564,24 +564,24 @@
   <div class="extra-card">
     <div class="form-group">
       <label class="form-label" for="orderDate">📅 วันที่ต้องการรับสินค้า:</label>
-      <input type="text" id="orderDate" class="form-input" placeholder="เช่น วันนี้, วันพรุ่งนี้, วันอังคาร" value="วันอังคาร">
+      <input type="text" id="orderDate" class="form-input" placeholder="เช่น วันจันทร์, วันอังคาร, วันเสาร์" value="">
       <div class="date-presets" id="datePresets">
-        <span class="date-chip" onclick="setDate('วันนี้')">วันนี้</span>
-        <span class="date-chip" onclick="setDate('วันพรุ่งนี้')">วันพรุ่งนี้</span>
-        <span class="date-chip active" onclick="setDate('วันอังคาร')">วันอังคาร</span>
+        <span class="date-chip" onclick="setDate('วันจันทร์')">วันจันทร์</span>
+        <span class="date-chip" onclick="setDate('วันอังคาร')">วันอังคาร</span>
         <span class="date-chip" onclick="setDate('วันพุธ')">วันพุธ</span>
         <span class="date-chip" onclick="setDate('วันพฤหัส')">วันพฤหัส</span>
         <span class="date-chip" onclick="setDate('วันศุกร์')">วันศุกร์</span>
-        <span class="date-chip" onclick="setDate('วันเสาร์-อาทิตย์')">เสาร์-อาทิตย์</span>
+        <span class="date-chip" onclick="setDate('วันเสาร์')">วันเสาร์</span>
+        <span class="date-chip" onclick="setDate('วันอาทิตย์')">วันอาทิตย์</span>
       </div>
     </div>
 
     <div class="form-group" style="margin-top: 14px;">
       <label class="form-label" for="orderTime">⏰ เวลาที่สะดวกรับสินค้า:</label>
-      <input type="text" id="orderTime" class="form-input" placeholder="เช่น 12:30 น., ช่วงบ่าย, หลังเลิกงาน" value="ช่วงเที่ยง-บ่าย (12:00 - 15:00)">
+      <input type="text" id="orderTime" class="form-input" placeholder="เช่น 12:30 น., ช่วงบ่าย, หลังเลิกงาน" value="">
       <div class="date-presets" id="timePresets">
         <span class="date-chip" onclick="setTime('ช่วงเช้า (09:00 - 12:00)')">ช่วงเช้า (09:00 - 12:00)</span>
-        <span class="date-chip active" onclick="setTime('ช่วงเที่ยง-บ่าย (12:00 - 15:00)')">เที่ยง-บ่าย (12:00 - 15:00)</span>
+        <span class="date-chip" onclick="setTime('ช่วงเที่ยง-บ่าย (12:00 - 15:00)')">เที่ยง-บ่าย (12:00 - 15:00)</span>
         <span class="date-chip" onclick="setTime('ช่วงเย็น (16:00 - 19:00)')">ช่วงเย็น (16:00 - 19:00)</span>
         <span class="date-chip" onclick="setTime('สะดวกตลอดทั้งวัน')">สะดวกทั้งวัน</span>
       </div>
@@ -616,8 +616,8 @@
 <div class="bottom-bar">
   <div class="bottom-content">
     <div class="total-col">
-      <span class="total-label" id="bottomItemsLabel">รวม 1 ถ้วย</span>
-      <span class="total-amount" id="bottomTotalAmount">69 ฿</span>
+      <span class="total-label" id="bottomItemsLabel">รวม 1 รายการ</span>
+      <span class="total-amount" id="bottomTotalAmount">0 ฿</span>
     </div>
     <button type="button" class="btn-send-order" onclick="copyAndFinishOrder()">
       <span>📋 สั่งซื้อ & คัดลอกส่งแชท</span>
@@ -653,8 +653,8 @@
   let cups = [
     {
       id: 1,
-      baseId: 'plain',
-      toppings: ['banana', 'strawberry'],
+      baseId: null,
+      toppings: [],
       honey: 'free' // 'free' or 'no'
     }
   ];
@@ -782,13 +782,13 @@
       card.className = 'item-card';
 
       const isFirst = cups.length === 1;
-      const baseObj = BASES.find(b => b.id === cup.baseId) || BASES[0];
+      const baseObj = BASES.find(b => b.id === cup.baseId);
       const isGrape = cup.baseId === 'grape';
 
       // Calculate cup price
       // Base price + (extra toppings > 2 ? (count - 2) * 10 : 0)
       let extraToppingsCount = Math.max(0, cup.toppings.length - 2);
-      let cupPrice = baseObj.price + (isGrape ? 0 : (extraToppingsCount * 10));
+      let cupPrice = baseObj ? (baseObj.price + (isGrape ? 0 : (extraToppingsCount * 10))) : 0;
 
       const theme = CUP_THEMES[index % CUP_THEMES.length];
       card.style.background = theme.cardBg;
@@ -809,6 +809,7 @@
         <!-- 1. Choose Base Yogurt -->
         <div class="step-label">
           <span>1. เลือกรสชาติโยเกิร์ต</span>
+          ${!baseObj ? `<span class="step-hint" style="color: #f43f5e; font-weight: 600;">* แตะเลือกรสชาติ</span>` : ''}
         </div>
         <div class="base-grid">
           ${BASES.map(b => `
@@ -871,7 +872,7 @@
 
         <div class="cup-subtotal" style="border-top: 1px dashed ${theme.borderColor};">
           <span>ราคารายการนี้:</span>
-          <b style="color: ${theme.subtotalColor};">${cupPrice} บาท</b>
+          <b style="color: ${theme.subtotalColor};">${baseObj ? `${cupPrice} บาท` : '0 บาท (รอเลือกรสชาติ)'}</b>
         </div>
       `;
 
@@ -915,8 +916,8 @@
     const newId = cups.length > 0 ? Math.max(...cups.map(c => c.id)) + 1 : 1;
     cups.push({
       id: newId,
-      baseId: 'plain',
-      toppings: ['banana', 'strawberry'],
+      baseId: null,
+      toppings: [],
       honey: 'free'
     });
     renderCups();
@@ -972,10 +973,18 @@
   document.getElementById('orderNote').addEventListener('input', updateSummary);
 
   function generateSummaryText() {
-    const orderDate = document.getElementById('orderDate').value.trim() || 'ตามตกลง';
-    const orderTime = document.getElementById('orderTime').value.trim() || 'ตามตกลง';
+    const orderDate = document.getElementById('orderDate').value.trim();
+    const orderTime = document.getElementById('orderTime').value.trim();
     const orderLocation = document.getElementById('orderLocation').value.trim();
     const orderNote = document.getElementById('orderNote').value.trim();
+
+    const hasAnySelection = cups.some(c => c.baseId || c.toppings.length > 0) || orderDate || orderTime || orderLocation || orderNote;
+    if (!hasAnySelection) {
+      return { 
+        text: '👉 กรุณาแตะเลือกรสชาติโยเกิร์ต และท็อปปิ้งด้านบน เพื่อดูสรุปรายการนะคะ ✨', 
+        total: 0 
+      };
+    }
 
     let totalAmount = 0;
     let lines = [];
@@ -983,16 +992,16 @@
     lines.push('-------------------------------');
 
     cups.forEach((cup, idx) => {
-      const baseObj = BASES.find(b => b.id === cup.baseId) || BASES[0];
+      const baseObj = BASES.find(b => b.id === cup.baseId);
       const isGrape = cup.baseId === 'grape';
       let extraToppingsCount = Math.max(0, cup.toppings.length - 2);
-      let cupPrice = baseObj.price + (isGrape ? 0 : (extraToppingsCount * 10));
+      let cupPrice = baseObj ? (baseObj.price + (isGrape ? 0 : (extraToppingsCount * 10))) : 0;
       totalAmount += cupPrice;
 
       const theme = CUP_THEMES[idx % CUP_THEMES.length];
       if (isGrape) {
         lines.push(`🍇 รายการที่ ${idx + 1}: ${baseObj.name} (${cupPrice}.-)`);
-      } else {
+      } else if (baseObj) {
         lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: ${baseObj.name} (${cupPrice}.-)`);
         
         // Format Toppings
@@ -1009,6 +1018,16 @@
 
         // Honey
         lines.push(`   • น้ำผึ้ง: ${cup.honey === 'free' ? 'รับน้ำผึ้งแท้ฟรี 🍯' : 'ไม่รับน้ำผึ้ง'}`);
+      } else {
+        lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: (ยังไม่ได้เลือกรสชาติ)`);
+        if (cup.toppings.length > 0) {
+          const toppingNames = cup.toppings.map((tId, tIdx) => {
+            const topObj = TOPPINGS.find(t => t.id === tId);
+            const name = topObj ? topObj.name : tId;
+            return tIdx >= 2 ? `${name}(+10)` : name;
+          });
+          lines.push(`   • ท็อปปิ้ง: ${toppingNames.join(', ')}`);
+        }
       }
       lines.push('');
     });
@@ -1016,8 +1035,12 @@
     lines.push('-------------------------------');
     lines.push(`📦 รวมทั้งหมด: ${cups.length} รายการ`);
     lines.push(`💰 ยอดรวมทั้งสิ้น: ${totalAmount} บาท`);
-    lines.push(`📅 วันที่ต้องการรับ: ${orderDate}`);
-    lines.push(`⏰ เวลาที่สะดวกรับ: ${orderTime}`);
+    if (orderDate) {
+      lines.push(`📅 วันที่ต้องการรับ: ${orderDate}`);
+    }
+    if (orderTime) {
+      lines.push(`⏰ เวลาที่สะดวกรับ: ${orderTime}`);
+    }
     if (orderLocation) {
       lines.push(`📍 ส่งที่ไหน / จุดนัดรับ: ${orderLocation}`);
     }
@@ -1045,6 +1068,16 @@
   }
 
   function copyAndFinishOrder() {
+    const unselectedIdx = cups.findIndex(c => !c.baseId);
+    if (unselectedIdx !== -1) {
+      showToast(`⚠️ กรุณาแตะเลือกรสชาติโยเกิร์ตใน ถ้วยที่ ${unselectedIdx + 1} ก่อนนะคะ`);
+      const allCards = document.querySelectorAll('.item-card');
+      if (allCards[unselectedIdx]) {
+        allCards[unselectedIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
     const { text } = generateSummaryText();
     
     // Copy to clipboard
