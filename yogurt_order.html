@@ -268,11 +268,12 @@
       border: 1.5px solid rgba(0, 0, 0, 0.07);
       background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(4px);
-      border-radius: 10px;
-      padding: 9px 10px;
+      border-radius: 12px;
+      padding: 8px 10px;
       cursor: pointer;
       transition: all 0.15s ease;
       user-select: none;
+      min-height: 46px;
     }
 
     .topping-pill:hover {
@@ -302,22 +303,71 @@
       color: #334155;
     }
 
-    .topping-badge {
+    .topping-stepper {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #ffffff;
+      border: 1.5px solid #fbcfe8;
+      border-radius: 999px;
+      padding: 2px 4px;
+      box-shadow: 0 1px 3px rgba(236, 72, 153, 0.12);
+    }
+
+    .btn-step {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .btn-step.minus {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+
+    .btn-step.minus:hover {
+      background: #fca5a5;
+      color: #b91c1c;
+    }
+
+    .btn-step.plus {
+      background: #ec4899;
+      color: #ffffff;
+    }
+
+    .btn-step.plus:hover {
+      background: #db2777;
+    }
+
+    .step-qty {
       font-family: var(--font-kanit);
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 2px 6px;
-      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #be123c;
+      min-width: 16px;
+      text-align: center;
     }
 
-    .topping-badge.free {
-      background: #dcfce7;
-      color: #15803d;
+    .topping-add-hint {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: color 0.15s ease;
+      padding: 0 4px;
     }
 
-    .topping-badge.extra {
-      background: #fef3c7;
-      color: #b45309;
+    .topping-pill:hover .topping-add-hint {
+      color: #ec4899;
     }
 
     .topping-badge.sold-out,
@@ -1056,7 +1106,7 @@
       <h1>กรีกโยเกิร์ตสดพร้อมทาน 🍨</h1>
       <p>เนื้อแน่น เข้มข้น โปรตีนสูง สดใหม่ทุกวัน</p>
       <div class="rule-pill">
-        ✨ ฟรี ท็อปปิ้ง 2 อย่าง / อย่างต่อไป +10.-
+        ✨ ฟรี ท็อปปิ้ง 2 อย่าง (เลือกซ้ำได้) / อย่างต่อไป +10.-
       </div>
     </div>
 
@@ -1395,30 +1445,40 @@
           <!-- 2. Choose Toppings -->
           <div class="step-label" style="margin-top: 14px;">
             <span>2. เลือกท็อปปิ้ง</span>
-            <span class="step-hint">ฟรี 2 อย่างแรก (เกิน +10.-)</span>
+            <span class="step-hint">${
+              cup.toppings.length === 0
+                ? 'ฟรี 2 ชิ้นแรก (เลือกซ้ำได้ / ชิ้นต่อไป +10.-)'
+                : cup.toppings.length <= 2
+                ? `เลือกแล้ว ${cup.toppings.length}/2 ชิ้น (ฟรี 🎉)`
+                : `เลือกแล้ว ${cup.toppings.length} ชิ้น (เกิน ${cup.toppings.length - 2} ชิ้น +${(cup.toppings.length - 2) * 10}.-)`
+            }</span>
           </div>
           <div class="toppings-grid">
             ${TOPPINGS.map(t => {
-              const isSelected = cup.toppings.includes(t.id);
+              const count = cup.toppings.filter(id => id === t.id).length;
+              const isSelected = count > 0;
               const isSoldOut = t.available === false;
-              let badgeHtml = '';
+              let rightSideHtml = '';
               if (isSoldOut) {
-                badgeHtml = `<span class="topping-badge sold-out">หมด</span>`;
+                rightSideHtml = `<span class="topping-badge sold-out">หมด</span>`;
               } else if (isSelected) {
-                const selectedIndex = cup.toppings.indexOf(t.id);
-                if (selectedIndex < 2) {
-                  badgeHtml = `<span class="topping-badge free">ฟรี</span>`;
-                } else {
-                  badgeHtml = `<span class="topping-badge extra">+10.-</span>`;
-                }
+                rightSideHtml = `
+                  <div class="topping-stepper">
+                    <button type="button" class="btn-step minus" onclick="event.stopPropagation(); changeToppingQty(${cup.id}, '${t.id}', -1)" title="ลดจำนวน">－</button>
+                    <span class="step-qty">${count}</span>
+                    <button type="button" class="btn-step plus" onclick="event.stopPropagation(); changeToppingQty(${cup.id}, '${t.id}', 1)" title="เพิ่มจำนวน">＋</button>
+                  </div>
+                `;
+              } else {
+                rightSideHtml = `<span class="topping-add-hint">＋</span>`;
               }
               return `
-                <div class="topping-pill ${isSelected ? 'selected' : ''} ${isSoldOut ? 'out-of-stock' : ''}" onclick="toggleTopping(${cup.id}, '${t.id}')">
+                <div class="topping-pill ${isSelected ? 'selected' : ''} ${isSoldOut ? 'out-of-stock' : ''}" onclick="changeToppingQty(${cup.id}, '${t.id}', 1)">
                   <div class="topping-name">
                     <span>${t.emoji || '✨'}</span>
                     <span>${t.name}</span>
                   </div>
-                  ${badgeHtml}
+                  ${rightSideHtml}
                 </div>
               `;
             }).join('')}
@@ -1467,22 +1527,24 @@
       }
     }
 
-    function toggleTopping(cupId, toppingId) {
+    function changeToppingQty(cupId, toppingId, delta) {
       const topObj = TOPPINGS.find(t => t.id === toppingId);
       if (topObj && topObj.available === false) {
         showToast(`⚠️ ขออภัยค่ะ ท็อปปิ้ง "${topObj.name}" หมดชั่วคราว`);
         return;
       }
       const cup = cups.find(c => c.id === cupId);
-      if (cup) {
-        const idx = cup.toppings.indexOf(toppingId);
+      if (!cup) return;
+
+      if (delta > 0) {
+        cup.toppings.push(toppingId);
+      } else if (delta < 0) {
+        const idx = cup.toppings.lastIndexOf(toppingId);
         if (idx > -1) {
           cup.toppings.splice(idx, 1);
-        } else {
-          cup.toppings.push(toppingId);
         }
-        renderCups();
       }
+      renderCups();
     }
 
     function setHoney(cupId, honeyOption) {
@@ -1597,12 +1659,16 @@
           lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: ${baseObj.name} (${cupPrice}.-)`);
 
           if (cup.toppings.length > 0) {
-            const toppingNames = cup.toppings.map((tId, tIdx) => {
+            const counts = {};
+            cup.toppings.forEach(tId => { counts[tId] = (counts[tId] || 0) + 1; });
+            const toppingList = Object.entries(counts).map(([tId, count]) => {
               const topObj = TOPPINGS.find(t => t.id === tId);
               const name = topObj ? topObj.name : tId;
-              return tIdx >= 2 ? `${name}(+10)` : name;
+              return count > 1 ? `${name} (x${count})` : name;
             });
-            lines.push(`   • ท็อปปิ้ง: ${toppingNames.join(', ')}`);
+            const extraCount = Math.max(0, cup.toppings.length - 2);
+            const extraTag = extraCount > 0 ? ` [เพิ่ม ${extraCount} อย่าง +${extraCount * 10}.-]` : ' [ฟรี 2 อย่าง]';
+            lines.push(`   • ท็อปปิ้ง: ${toppingList.join(', ')}${extraTag}`);
           } else {
             lines.push(`   • ท็อปปิ้ง: ไม่ใส่ท็อปปิ้ง`);
           }
@@ -1611,12 +1677,14 @@
         } else {
           lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: (ยังไม่ได้เลือกรสชาติ)`);
           if (cup.toppings.length > 0) {
-            const toppingNames = cup.toppings.map((tId, tIdx) => {
+            const counts = {};
+            cup.toppings.forEach(tId => { counts[tId] = (counts[tId] || 0) + 1; });
+            const toppingList = Object.entries(counts).map(([tId, count]) => {
               const topObj = TOPPINGS.find(t => t.id === tId);
               const name = topObj ? topObj.name : tId;
-              return tIdx >= 2 ? `${name}(+10)` : name;
+              return count > 1 ? `${name} (x${count})` : name;
             });
-            lines.push(`   • ท็อปปิ้ง: ${toppingNames.join(', ')}`);
+            lines.push(`   • ท็อปปิ้ง: ${toppingList.join(', ')}`);
           }
         }
         lines.push('');
