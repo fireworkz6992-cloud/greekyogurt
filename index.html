@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>สั่งกรีกโยเกิร์ตโฮมเมด 🍨 Greek Yogurt Order</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1252,7 +1255,7 @@
     const DEFAULT_BASES = [
       { id: 'plain', name: 'กรีกโยเกิร์ต ดั้งเดิม (60g)', price: 69, emoji: '🍨', available: true },
       { id: 'sesame', name: 'กรีกโยเกิร์ต งาดำ (60g)', price: 69, emoji: '🖤', available: true },
-      { id: 'grape', name: 'องุ่นสอดไส้กรีกโยเกิร์ต (1 กล่อง)', price: 89, emoji: '🍇', isSpecial: true, available: true }
+      { id: 'grape', name: 'องุ่นสอดไส้กรีกโยเกิร์ต (1 กล่อง)', price: 39, emoji: '🍇', isSpecial: true, available: true }
     ];
 
     const DEFAULT_TOPPINGS = [
@@ -1772,7 +1775,18 @@
       const repo = localStorage.getItem('yogurt_github_repo') || 'fireworkz6992-cloud/greekyogurt';
       const cacheBuster = Date.now();
 
-      // 1. Try GitHub Contents API (Instant & fresh, bypasses CDN cache)
+      // Priority 1: Fetch local ./menu.json directly (Fastest, same-origin, zero rate limit, works everywhere)
+      try {
+        const res = await fetch(`./menu.json?t=${cacheBuster}`, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.bases) && Array.isArray(data.toppings)) {
+            applyLoadedMenu(data, 'Local menu.json');
+          }
+        }
+      } catch (e) {}
+
+      // Priority 2: Fetch GitHub Contents API (Instant cloud commit bypasses GitHub Pages deploy delay)
       try {
         const res = await fetch(`https://api.github.com/repos/${repo}/contents/menu.json?t=${cacheBuster}`, {
           headers: { 'Accept': 'application/vnd.github.v3+json' }
@@ -1781,48 +1795,40 @@
           const fileData = await res.json();
           if (fileData.content) {
             const cleanBase64 = fileData.content.replace(/\s/g, '');
-            const decodedStr = decodeURIComponent(escape(atob(cleanBase64)));
+            const bytes = Uint8Array.from(atob(cleanBase64), c => c.charCodeAt(0));
+            const decodedStr = new TextDecoder().decode(bytes);
             const data = JSON.parse(decodedStr);
             if (data && Array.isArray(data.bases) && Array.isArray(data.toppings)) {
-              BASES = data.bases;
-              TOPPINGS = data.toppings;
-              localStorage.setItem('yogurt_custom_bases', JSON.stringify(BASES));
-              localStorage.setItem('yogurt_custom_toppings', JSON.stringify(TOPPINGS));
-              renderCups();
-              console.log('✅ โหลดเมนูล่าสุดจาก GitHub Contents API เรียบร้อย');
+              applyLoadedMenu(data, 'GitHub API');
               return;
             }
           }
         }
-      } catch (e) {
-        // Fallback to URL fetch
-      }
+      } catch (e) {}
 
-      // 2. Fallback to raw GitHub or local menu.json
-      const urls = [
-        `https://raw.githubusercontent.com/${repo}/main/menu.json?t=${cacheBuster}`,
-        `./menu.json?t=${cacheBuster}`
-      ];
-
-      for (const url of urls) {
-        try {
-          const res = await fetch(url, { cache: 'no-store' });
-          if (res.ok) {
-            const data = await res.json();
-            if (data && Array.isArray(data.bases) && Array.isArray(data.toppings)) {
-              BASES = data.bases;
-              TOPPINGS = data.toppings;
-              localStorage.setItem('yogurt_custom_bases', JSON.stringify(BASES));
-              localStorage.setItem('yogurt_custom_toppings', JSON.stringify(TOPPINGS));
-              renderCups();
-              console.log('✅ โหลดเมนูล่าสุดจาก Cloud URL เรียบร้อย:', url);
-              break;
-            }
+      // Priority 3: Fallback raw GitHub
+      try {
+        const res = await fetch(`https://raw.githubusercontent.com/${repo}/main/menu.json?t=${cacheBuster}`, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.bases) && Array.isArray(data.toppings)) {
+            applyLoadedMenu(data, 'Raw GitHub');
           }
-        } catch (e) {
-          // ignore & try next url
         }
-      }
+      } catch (e) {}
+    }
+
+    function applyLoadedMenu(data, source) {
+      const currentUpdate = window._lastMenuUpdate || 0;
+      if (data.updatedAt && data.updatedAt < currentUpdate) return;
+      window._lastMenuUpdate = data.updatedAt || Date.now();
+
+      BASES = data.bases;
+      TOPPINGS = data.toppings;
+      localStorage.setItem('yogurt_custom_bases', JSON.stringify(BASES));
+      localStorage.setItem('yogurt_custom_toppings', JSON.stringify(TOPPINGS));
+      renderCups();
+      console.log(`✅ โหลดเมนูล่าสุดจาก ${source} เรียบร้อย:`, data);
     }
 
     // --- Admin Functions (PIN: 3112) ---
