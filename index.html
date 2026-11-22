@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>สั่งกรีกโยเกิร์ตโฮมเมด 🍨 Greek Yogurt Order</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #f43f5e;
+      --primary-soft: #ffe4e6;
+      --primary-hover: #e11d48;
+      --accent-pink: #ec4899;
+      --accent-yellow: #f59e0b;
+      --bg: #fffbf5;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #f1e8dc;
+      --radius: 16px;
+      --font-kanit: 'Kanit', sans-serif;
+      --font-thai: 'IBM Plex Sans Thai', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: var(--bg);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(244, 63, 94, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: var(--font-thai);
+      min-height: 100vh;
+      padding: 16px 12px 100px 12px;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Hero Banner Header */
+    .hero-banner {
+      background: linear-gradient(135deg, #fff0f3 0%, #fef3c7 100%);
+      border: 1.5px solid #fecdd3;
+      border-radius: 20px;
+      padding: 20px 16px;
+      text-align: center;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(244, 63, 94, 0.08);
+    }
+    .hero-tag {
+      display: inline-block;
+      background: #f43f5e;
+      color: #ffffff;
+      font-family: var(--font-kanit);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    .hero-banner h1 {
+      font-family: var(--font-kanit);
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: #be123c;
+      line-height: 1.25;
+    }
+    .hero-banner p {
+      font-size: 0.88rem;
+      color: #881337;
+      margin-top: 4px;
+    }
+    .rule-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px dashed #f43f5e;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      color: #be123c;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    /* Section Header */
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 18px 4px 10px 4px;
+    }
+    .section-title {
+      font-family: var(--font-kanit);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Item Card (Each Yogurt Cup) */
+    .item-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      position: relative;
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+    .item-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 12px;
+    }
+    .item-cup-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cup-badge-pill {
+      font-family: var(--font-kanit);
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.01em;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .btn-delete-cup {
+      background: rgba(254, 226, 226, 0.9);
+      border: 1px solid #fca5a5;
+      color: #ef4444;
+      font-size: 0.78rem;
+      font-family: var(--font-kanit);
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-delete-cup:hover {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* Step Labels inside card */
+    .step-label {
+      font-family: var(--font-kanit);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #334155;
+      margin: 10px 0 8px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .step-hint {
+      font-size: 0.76rem;
+      color: #f43f5e;
+      font-weight: 500;
+    }
+
+    /* Radio Base Yogurt Options */
+    .base-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .base-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1.5px solid rgba(0, 0, 0, 0.07);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(4px);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .base-btn:hover {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+    .base-btn.selected {
+      border-color: #f43f5e;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(244, 63, 94, 0.15), 0 0 0 1px #f43f5e;
+    }
+    .base-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+    }
+    .base-price {
+      font-family: var(--font-kanit);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #f43f5e;
+    }
+
+    /* Toppings Pills Grid */
+    .toppings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .topping-pill {
+      border: 1.5px solid rgba(0, 0, 0, 0.07);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(4px);
+      border-radius: 12px;
+      padding: 8px 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .topping-pill:hover {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+    .topping-pill:active { transform: scale(0.98); }
+    .topping-pill.selected {
+      border-color: #f43f5e;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(244, 63, 94, 0.12), 0 0 0 1px #f43f5e;
+      color: #be123c;
+      font-weight: 600;
+    }
+    .topping-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+    }
+    .topping-badge {
+      font-size: 0.7rem;
+      font-family: var(--font-kanit);
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: #e2e8f0;
+      color: #64748b;
+    }
+    .topping-pill.selected .topping-badge.free {
+      background: #dcfce7;
+      color: #15803d;
+    }
+    .topping-pill.selected .topping-badge.extra {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-weight: 700;
+    }
+
+    /* Honey Option */
+    .honey-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(0, 0, 0, 0.07);
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin-top: 10px;
+    }
+    .honey-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .honey-switch {
+      display: flex;
+      gap: 4px;
+    }
+    .honey-btn {
+      border: 1px solid #fde68a;
+      background: #ffffff;
+      color: #78350f;
+      font-size: 0.75rem;
+      font-family: var(--font-kanit);
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .honey-btn.active {
+      background: #f59e0b;
+      color: #ffffff;
+      border-color: #f59e0b;
+      font-weight: 600;
+    }
+
+    /* Subtotal Line per cup */
+    .cup-subtotal {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+    .cup-subtotal b {
+      font-family: var(--font-kanit);
+      font-size: 1.05rem;
+      color: #e11d48;
+    }
+
+    /* Add Cup Button */
+    .btn-add-cup {
+      width: 100%;
+      background: #ffffff;
+      border: 2px dashed #f43f5e;
+      color: #e11d48;
+      font-family: var(--font-kanit);
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      transition: all 0.15s ease;
+    }
+    .btn-add-cup:hover {
+      background: #fff1f2;
+    }
+
+    /* Delivery / Notes Card */
+    .extra-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    .form-label {
+      font-family: var(--font-kanit);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .form-input {
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: var(--font-thai);
+      font-size: 0.9rem;
+      outline: none;
+      background: #fafaf9;
+    }
+    .form-input:focus {
+      border-color: #f43f5e;
+      background: #ffffff;
+    }
+    .date-presets {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .date-chip {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-family: var(--font-kanit);
+      color: #475569;
+      cursor: pointer;
+    }
+    .date-chip.active {
+      background: #be123c;
+      color: #ffffff;
+      border-color: #be123c;
+    }
+
+    /* Order Summary Card Preview */
+    .summary-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: var(--font-kanit);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 10px;
+    }
+    .summary-text-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: var(--font-thai);
+      font-size: 0.85rem;
+      color: #334155;
+      white-space: pre-line;
+      line-height: 1.5;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    /* Floating Bottom Action Bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1.5px solid #fecdd3;
+      padding: 12px 16px;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+      z-index: 100;
+    }
+    .bottom-content {
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .total-col {
+      display: flex;
+      flex-direction: column;
+    }
+    .total-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-family: var(--font-kanit);
+    }
+    .total-amount {
+      font-family: var(--font-kanit);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #be123c;
+      line-height: 1.1;
+    }
+    .btn-send-order {
+      flex: 1;
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      color: #ffffff;
+      border: none;
+      font-family: var(--font-kanit);
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(244, 63, 94, 0.35);
+      transition: all 0.15s ease;
+    }
+    .btn-send-order:active {
+      transform: scale(0.98);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: #1e293b;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <span class="hero-tag">HOMEMADE GREEK YOGURT</span>
+    <h1>กรีกโยเกิร์ตสดพร้อมทาน 🍨</h1>
+    <p>เนื้อแน่น เข้มข้น โปรตีนสูง สดใหม่ทุกวัน</p>
+    <div class="rule-pill">
+      ✨ ฟรี ท็อปปิ้ง 2 อย่าง / อย่างต่อไป +10.-
+    </div>
+  </div>
+
+  <!-- Header of Orders -->
+  <div class="section-head">
+    <div class="section-title">
+      <span>🥣 รายการโยเกิร์ตที่สั่ง</span>
+      <span style="font-size: 0.85rem; color: #94a3b8;" id="totalCupsCount">(1 ถ้วย)</span>
+    </div>
+  </div>
+
+  <!-- Cup Cards Container -->
+  <div id="cupsContainer">
+    <!-- Generated by JS -->
+  </div>
+
+  <!-- Add Cup Button -->
+  <button type="button" class="btn-add-cup" onclick="addCup()">
+    <span>➕ เพิ่มโยเกิร์ตอีกถ้วย / รายการอื่น</span>
+  </button>
+
+  <!-- Delivery / Pickup Info -->
+  <div class="extra-card">
+    <div class="form-group">
+      <label class="form-label" for="orderDate">📅 วันที่ต้องการรับสินค้า:</label>
+      <input type="text" id="orderDate" class="form-input" placeholder="เช่น วันนี้, วันพรุ่งนี้, วันอังคาร" value="วันอังคาร">
+      <div class="date-presets" id="datePresets">
+        <span class="date-chip" onclick="setDate('วันนี้')">วันนี้</span>
+        <span class="date-chip" onclick="setDate('วันพรุ่งนี้')">วันพรุ่งนี้</span>
+        <span class="date-chip active" onclick="setDate('วันอังคาร')">วันอังคาร</span>
+        <span class="date-chip" onclick="setDate('วันพุธ')">วันพุธ</span>
+        <span class="date-chip" onclick="setDate('วันพฤหัส')">วันพฤหัส</span>
+        <span class="date-chip" onclick="setDate('วันศุกร์')">วันศุกร์</span>
+        <span class="date-chip" onclick="setDate('วันเสาร์-อาทิตย์')">เสาร์-อาทิตย์</span>
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top: 14px;">
+      <label class="form-label" for="orderTime">⏰ เวลาที่สะดวกรับสินค้า:</label>
+      <input type="text" id="orderTime" class="form-input" placeholder="เช่น 12:30 น., ช่วงบ่าย, หลังเลิกงาน" value="ช่วงเที่ยง-บ่าย (12:00 - 15:00)">
+      <div class="date-presets" id="timePresets">
+        <span class="date-chip" onclick="setTime('ช่วงเช้า (09:00 - 12:00)')">ช่วงเช้า (09:00 - 12:00)</span>
+        <span class="date-chip active" onclick="setTime('ช่วงเที่ยง-บ่าย (12:00 - 15:00)')">เที่ยง-บ่าย (12:00 - 15:00)</span>
+        <span class="date-chip" onclick="setTime('ช่วงเย็น (16:00 - 19:00)')">ช่วงเย็น (16:00 - 19:00)</span>
+        <span class="date-chip" onclick="setTime('สะดวกตลอดทั้งวัน')">สะดวกทั้งวัน</span>
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top: 14px;">
+      <label class="form-label" for="orderLocation">📍 ส่งที่ไหน / จุดนัดรับ:</label>
+      <input type="text" id="orderLocation" class="form-input" placeholder="ระบุสถานที่ส่ง เช่น ชื่อตึก, ห้อง, บ้านเลขที่ หรือจุดนัดรับ">
+    </div>
+
+    <div class="form-group" style="margin-top: 14px;">
+      <label class="form-label" for="orderNote">📝 โน้ตเพิ่มเติมถึงร้าน (ถ้ามี):</label>
+      <input type="text" id="orderNote" class="form-input" placeholder="เช่น แยกท็อปปิ้ง, หวานน้อย, ขอช้อนเพิ่ม">
+      <div class="date-presets" id="notePresets">
+        <span class="date-chip" onclick="appendNote('แยกท็อปปิ้ง')">+ แยกท็อปปิ้ง</span>
+        <span class="date-chip" onclick="appendNote('ขอช้อนด้วยค่ะ')">+ ขอช้อน</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Realtime Text Preview -->
+  <div class="summary-card">
+    <div class="summary-title">👁️ ตัวอย่างข้อความที่จะส่งเข้าแชท:</div>
+    <div class="summary-text-box" id="previewText">
+      กำลังเตรียมรายการ...
+    </div>
+  </div>
+
+</div>
+
+<!-- Floating Bottom Bar -->
+<div class="bottom-bar">
+  <div class="bottom-content">
+    <div class="total-col">
+      <span class="total-label" id="bottomItemsLabel">รวม 1 ถ้วย</span>
+      <span class="total-amount" id="bottomTotalAmount">69 ฿</span>
+    </div>
+    <button type="button" class="btn-send-order" onclick="copyAndFinishOrder()">
+      <span>📋 สั่งซื้อ & คัดลอกส่งแชท</span>
+    </button>
+  </div>
+</div>
+
+<!-- Toast Notice -->
+<div class="toast" id="toast">
+  <span>✅</span>
+  <span id="toastMsg">คัดลอกรายการแล้ว! วางในแชทส่งให้ร้านได้เลยค่ะ</span>
+</div>
+
+<script>
+  // Product Catalog
+  const BASES = [
+    { id: 'plain', name: 'กรีกโยเกิร์ต ดั้งเดิม (60g)', price: 69, emoji: '🍨' },
+    { id: 'sesame', name: 'กรีกโยเกิร์ต งาดำ (60g)', price: 69, emoji: '🖤' },
+    { id: 'grape', name: 'องุ่นสอดไส้กรีกโยเกิร์ต (1 กล่อง)', price: 89, emoji: '🍇', isSpecial: true }
+  ];
+
+  const TOPPINGS = [
+    { id: 'banana', name: 'กล้วยหอม', emoji: '🍌' },
+    { id: 'strawberry', name: 'สตรอว์เบอร์รี่', emoji: '🍓' },
+    { id: 'blueberry', name: 'บลูเบอร์รี่', emoji: '🫐' },
+    { id: 'kiwi', name: 'กีวี่', emoji: '🥝' },
+    { id: 'dragonfruit', name: 'แก้วมังกร', emoji: '🐉' },
+    { id: 'biscoff', name: 'บิสกิตคาราเมล', emoji: '🍪' },
+    { id: 'granola', name: 'กราโนล่าช็อค', emoji: '🍫' }
+  ];
+
+  // State
+  let cups = [
+    {
+      id: 1,
+      baseId: 'plain',
+      toppings: ['banana', 'strawberry'],
+      honey: 'free' // 'free' or 'no'
+    }
+  ];
+
+  // Soft Pastel Cafe Themes for each cup (1 to 10+)
+  const CUP_THEMES = [
+    {
+      name: 'Strawberry Rose',
+      icon: '🍓',
+      cardBg: 'linear-gradient(160deg, #fff5f7 0%, #ffffff 100%)',
+      borderColor: '#fecdd3',
+      topBorder: '#f43f5e',
+      badgeBg: '#ffe4e6',
+      badgeText: '#be123c',
+      badgeBorder: '#fecdd3',
+      subtotalColor: '#be123c'
+    },
+    {
+      name: 'Blueberry Lavender',
+      icon: '🫐',
+      cardBg: 'linear-gradient(160deg, #f5f3ff 0%, #ffffff 100%)',
+      borderColor: '#ddd6fe',
+      topBorder: '#8b5cf6',
+      badgeBg: '#ede9fe',
+      badgeText: '#6d28d9',
+      badgeBorder: '#ddd6fe',
+      subtotalColor: '#6d28d9'
+    },
+    {
+      name: 'Kiwi Mint',
+      icon: '🥝',
+      cardBg: 'linear-gradient(160deg, #f0fdf4 0%, #ffffff 100%)',
+      borderColor: '#bbf7d0',
+      topBorder: '#22c55e',
+      badgeBg: '#dcfce7',
+      badgeText: '#15803d',
+      badgeBorder: '#bbf7d0',
+      subtotalColor: '#15803d'
+    },
+    {
+      name: 'Honey Butter',
+      icon: '🍯',
+      cardBg: 'linear-gradient(160deg, #fffbeb 0%, #ffffff 100%)',
+      borderColor: '#fde68a',
+      topBorder: '#f59e0b',
+      badgeBg: '#fef3c7',
+      badgeText: '#b45309',
+      badgeBorder: '#fde68a',
+      subtotalColor: '#b45309'
+    },
+    {
+      name: 'Peach Coral',
+      icon: '🍑',
+      cardBg: 'linear-gradient(160deg, #fff7ed 0%, #ffffff 100%)',
+      borderColor: '#fed7aa',
+      topBorder: '#f97316',
+      badgeBg: '#ffedd5',
+      badgeText: '#c2410c',
+      badgeBorder: '#fed7aa',
+      subtotalColor: '#c2410c'
+    },
+    {
+      name: 'Grape Violet',
+      icon: '🍇',
+      cardBg: 'linear-gradient(160deg, #faf5ff 0%, #ffffff 100%)',
+      borderColor: '#e9d5ff',
+      topBorder: '#a855f7',
+      badgeBg: '#f3e8ff',
+      badgeText: '#7e22ce',
+      badgeBorder: '#e9d5ff',
+      subtotalColor: '#7e22ce'
+    },
+    {
+      name: 'Sky Vanilla',
+      icon: '🥣',
+      cardBg: 'linear-gradient(160deg, #f0f9ff 0%, #ffffff 100%)',
+      borderColor: '#bae6fd',
+      topBorder: '#0ea5e9',
+      badgeBg: '#e0f2fe',
+      badgeText: '#0369a1',
+      badgeBorder: '#bae6fd',
+      subtotalColor: '#0369a1'
+    },
+    {
+      name: 'Caramel Biscuit',
+      icon: '🍪',
+      cardBg: 'linear-gradient(160deg, #fdf8f6 0%, #ffffff 100%)',
+      borderColor: '#f5d0c5',
+      topBorder: '#b45309',
+      badgeBg: '#fbeee9',
+      badgeText: '#78350f',
+      badgeBorder: '#f5d0c5',
+      subtotalColor: '#78350f'
+    },
+    {
+      name: 'Sweet Melon',
+      icon: '🍈',
+      cardBg: 'linear-gradient(160deg, #f7fee7 0%, #ffffff 100%)',
+      borderColor: '#d9f99d',
+      topBorder: '#84cc16',
+      badgeBg: '#ecfccb',
+      badgeText: '#4d7c0f',
+      badgeBorder: '#d9f99d',
+      subtotalColor: '#4d7c0f'
+    },
+    {
+      name: 'Fresh Yuzu',
+      icon: '🍊',
+      cardBg: 'linear-gradient(160deg, #fffdf0 0%, #ffffff 100%)',
+      borderColor: '#fef08a',
+      topBorder: '#eab308',
+      badgeBg: '#fef9c3',
+      badgeText: '#854d0e',
+      badgeBorder: '#fef08a',
+      subtotalColor: '#854d0e'
+    }
+  ];
+
+  function renderCups() {
+    const container = document.getElementById('cupsContainer');
+    container.innerHTML = '';
+
+    cups.forEach((cup, index) => {
+      const card = document.createElement('div');
+      card.className = 'item-card';
+
+      const isFirst = cups.length === 1;
+      const baseObj = BASES.find(b => b.id === cup.baseId) || BASES[0];
+      const isGrape = cup.baseId === 'grape';
+
+      // Calculate cup price
+      // Base price + (extra toppings > 2 ? (count - 2) * 10 : 0)
+      let extraToppingsCount = Math.max(0, cup.toppings.length - 2);
+      let cupPrice = baseObj.price + (isGrape ? 0 : (extraToppingsCount * 10));
+
+      const theme = CUP_THEMES[index % CUP_THEMES.length];
+      card.style.background = theme.cardBg;
+      card.style.borderColor = theme.borderColor;
+      card.style.borderTop = `4px solid ${theme.topBorder}`;
+
+      card.innerHTML = `
+        <div class="item-card-header" style="border-bottom: 1px solid ${theme.borderColor};">
+          <div class="item-cup-badge">
+            <span class="cup-badge-pill" style="background: ${theme.badgeBg}; color: ${theme.badgeText}; border: 1px solid ${theme.badgeBorder};">
+              <span>${theme.icon}</span>
+              <span>ถ้วยที่ ${index + 1}</span>
+            </span>
+          </div>
+          ${!isFirst ? `<button type="button" class="btn-delete-cup" onclick="removeCup(${cup.id})">✕ ลบถ้วยนี้</button>` : ''}
+        </div>
+
+        <!-- 1. Choose Base Yogurt -->
+        <div class="step-label">
+          <span>1. เลือกรสชาติโยเกิร์ต</span>
+        </div>
+        <div class="base-grid">
+          ${BASES.map(b => `
+            <div class="base-btn ${cup.baseId === b.id ? 'selected' : ''}" onclick="selectBase(${cup.id}, '${b.id}')">
+              <div class="base-info">
+                <span>${b.emoji}</span>
+                <span>${b.name}</span>
+              </div>
+              <div class="base-price">${b.price}.-</div>
+            </div>
+          `).join('')}
+        </div>
+
+        ${!isGrape ? `
+          <!-- 2. Choose Toppings -->
+          <div class="step-label" style="margin-top: 14px;">
+            <span>2. เลือกท็อปปิ้ง</span>
+            <span class="step-hint">ฟรี 2 อย่างแรก (เกิน +10.-)</span>
+          </div>
+          <div class="toppings-grid">
+            ${TOPPINGS.map(t => {
+              const isSelected = cup.toppings.includes(t.id);
+              let badgeHtml = '';
+              if (isSelected) {
+                const selectedIndex = cup.toppings.indexOf(t.id);
+                if (selectedIndex < 2) {
+                  badgeHtml = `<span class="topping-badge free">ฟรี</span>`;
+                } else {
+                  badgeHtml = `<span class="topping-badge extra">+10.-</span>`;
+                }
+              }
+              return `
+                <div class="topping-pill ${isSelected ? 'selected' : ''}" onclick="toggleTopping(${cup.id}, '${t.id}')">
+                  <div class="topping-name">
+                    <span>${t.emoji}</span>
+                    <span>${t.name}</span>
+                  </div>
+                  ${badgeHtml}
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- 3. Free Honey Option -->
+          <div class="honey-row">
+            <div class="honey-label">
+              <span>🍯</span>
+              <span>ราดน้ำผึ้งแท้ฟรี:</span>
+            </div>
+            <div class="honey-switch">
+              <button type="button" class="honey-btn ${cup.honey === 'free' ? 'active' : ''}" onclick="setHoney(${cup.id}, 'free')">รับน้ำผึ้งฟรี</button>
+              <button type="button" class="honey-btn ${cup.honey === 'no' ? 'active' : ''}" onclick="setHoney(${cup.id}, 'no')">ไม่รับ</button>
+            </div>
+          </div>
+        ` : `
+          <div style="background: rgba(255, 255, 255, 0.85); border: 1.5px dashed ${theme.borderColor}; border-radius: 12px; padding: 12px; margin-top: 10px; font-size: 0.85rem; color: #475569; text-align: center;">
+            🍇 องุ่นไชน์มัสแคท / องุ่นดำ คัดพิเศษ ยัดไส้กรีกโยเกิร์ตเต็มคำ ทานง่าย อร่อยฟิน!
+          </div>
+        `}
+
+        <div class="cup-subtotal" style="border-top: 1px dashed ${theme.borderColor};">
+          <span>ราคารายการนี้:</span>
+          <b style="color: ${theme.subtotalColor};">${cupPrice} บาท</b>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+
+    document.getElementById('totalCupsCount').textContent = `(${cups.length} รายการ)`;
+    updateSummary();
+  }
+
+  function selectBase(cupId, baseId) {
+    const cup = cups.find(c => c.id === cupId);
+    if (cup) {
+      cup.baseId = baseId;
+      renderCups();
+    }
+  }
+
+  function toggleTopping(cupId, toppingId) {
+    const cup = cups.find(c => c.id === cupId);
+    if (cup) {
+      const idx = cup.toppings.indexOf(toppingId);
+      if (idx > -1) {
+        cup.toppings.splice(idx, 1);
+      } else {
+        cup.toppings.push(toppingId);
+      }
+      renderCups();
+    }
+  }
+
+  function setHoney(cupId, honeyOption) {
+    const cup = cups.find(c => c.id === cupId);
+    if (cup) {
+      cup.honey = honeyOption;
+      renderCups();
+    }
+  }
+
+  function addCup() {
+    const newId = cups.length > 0 ? Math.max(...cups.map(c => c.id)) + 1 : 1;
+    cups.push({
+      id: newId,
+      baseId: 'plain',
+      toppings: ['banana', 'strawberry'],
+      honey: 'free'
+    });
+    renderCups();
+    // Scroll smoothly to the new card
+    setTimeout(() => {
+      window.scrollTo({ top: document.body.scrollHeight - 250, behavior: 'smooth' });
+    }, 100);
+  }
+
+  function removeCup(cupId) {
+    if (cups.length <= 1) return;
+    cups = cups.filter(c => c.id !== cupId);
+    renderCups();
+  }
+
+  function setDate(dateStr) {
+    document.getElementById('orderDate').value = dateStr;
+    document.querySelectorAll('#datePresets .date-chip').forEach(c => {
+      c.classList.toggle('active', c.textContent.trim() === dateStr);
+    });
+    updateSummary();
+  }
+
+  function setTime(timeStr) {
+    document.getElementById('orderTime').value = timeStr;
+    document.querySelectorAll('#timePresets .date-chip').forEach(c => {
+      c.classList.toggle('active', c.getAttribute('onclick')?.includes(timeStr));
+    });
+    updateSummary();
+  }
+
+  function appendNote(noteStr) {
+    const input = document.getElementById('orderNote');
+    if (input.value.trim()) {
+      if (!input.value.includes(noteStr)) {
+        input.value += `, ${noteStr}`;
+      }
+    } else {
+      input.value = noteStr;
+    }
+    updateSummary();
+  }
+
+  document.getElementById('orderDate').addEventListener('input', () => {
+    document.querySelectorAll('#datePresets .date-chip').forEach(c => c.classList.remove('active'));
+    updateSummary();
+  });
+  document.getElementById('orderTime').addEventListener('input', () => {
+    document.querySelectorAll('#timePresets .date-chip').forEach(c => c.classList.remove('active'));
+    updateSummary();
+  });
+  document.getElementById('orderLocation').addEventListener('input', updateSummary);
+  document.getElementById('orderNote').addEventListener('input', updateSummary);
+
+  function generateSummaryText() {
+    const orderDate = document.getElementById('orderDate').value.trim() || 'ตามตกลง';
+    const orderTime = document.getElementById('orderTime').value.trim() || 'ตามตกลง';
+    const orderLocation = document.getElementById('orderLocation').value.trim();
+    const orderNote = document.getElementById('orderNote').value.trim();
+
+    let totalAmount = 0;
+    let lines = [];
+    lines.push('📋 สรุปรายการสั่งกรีกโยเกิร์ต');
+    lines.push('-------------------------------');
+
+    cups.forEach((cup, idx) => {
+      const baseObj = BASES.find(b => b.id === cup.baseId) || BASES[0];
+      const isGrape = cup.baseId === 'grape';
+      let extraToppingsCount = Math.max(0, cup.toppings.length - 2);
+      let cupPrice = baseObj.price + (isGrape ? 0 : (extraToppingsCount * 10));
+      totalAmount += cupPrice;
+
+      const theme = CUP_THEMES[idx % CUP_THEMES.length];
+      if (isGrape) {
+        lines.push(`🍇 รายการที่ ${idx + 1}: ${baseObj.name} (${cupPrice}.-)`);
+      } else {
+        lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: ${baseObj.name} (${cupPrice}.-)`);
+        
+        // Format Toppings
+        if (cup.toppings.length > 0) {
+          const toppingNames = cup.toppings.map((tId, tIdx) => {
+            const topObj = TOPPINGS.find(t => t.id === tId);
+            const name = topObj ? topObj.name : tId;
+            return tIdx >= 2 ? `${name}(+10)` : name;
+          });
+          lines.push(`   • ท็อปปิ้ง: ${toppingNames.join(', ')}`);
+        } else {
+          lines.push(`   • ท็อปปิ้ง: ไม่ใส่ท็อปปิ้ง`);
+        }
+
+        // Honey
+        lines.push(`   • น้ำผึ้ง: ${cup.honey === 'free' ? 'รับน้ำผึ้งแท้ฟรี 🍯' : 'ไม่รับน้ำผึ้ง'}`);
+      }
+      lines.push('');
+    });
+
+    lines.push('-------------------------------');
+    lines.push(`📦 รวมทั้งหมด: ${cups.length} รายการ`);
+    lines.push(`💰 ยอดรวมทั้งสิ้น: ${totalAmount} บาท`);
+    lines.push(`📅 วันที่ต้องการรับ: ${orderDate}`);
+    lines.push(`⏰ เวลาที่สะดวกรับ: ${orderTime}`);
+    if (orderLocation) {
+      lines.push(`📍 ส่งที่ไหน / จุดนัดรับ: ${orderLocation}`);
+    }
+    if (orderNote) {
+      lines.push(`📝 หมายเหตุ: ${orderNote}`);
+    }
+
+    return { text: lines.join('\n'), total: totalAmount };
+  }
+
+  function updateSummary() {
+    const { text, total } = generateSummaryText();
+    document.getElementById('previewText').textContent = text;
+    document.getElementById('bottomTotalAmount').textContent = `${total} ฿`;
+    document.getElementById('bottomItemsLabel').textContent = `รวม ${cups.length} รายการ`;
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3200);
+  }
+
+  function copyAndFinishOrder() {
+    const { text } = generateSummaryText();
+    
+    // Copy to clipboard
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('📋 คัดลอกรายการสั่งซื้อเรียบร้อย! ส่งในแชทให้ร้านได้เลยค่ะ');
+      }).catch(() => {
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      showToast('📋 คัดลอกรายการสั่งซื้อเรียบร้อย! ส่งในแชทได้เลยค่ะ');
+    } catch (err) {
+      alert('กรุณาคัดลอกข้อความในช่องตัวอย่างแล้วส่งในแชทนะคะ');
+    }
+    document.body.removeChild(textArea);
+  }
+
+  // Initial Render
+  renderCups();
+</script>
+
+</body>
+</html>
