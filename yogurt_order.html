@@ -1770,12 +1770,53 @@
       document.body.removeChild(textArea);
     }
 
+    // Auto-setup Admin Token if URL contains hash (#admin_token=ghp_...)
+    if (window.location.hash && window.location.hash.startsWith('#admin_token=')) {
+      const extractedToken = window.location.hash.replace('#admin_token=', '').trim();
+      if (extractedToken) {
+        localStorage.setItem('yogurt_github_token', extractedToken);
+        localStorage.setItem('yogurt_github_repo', 'fireworkz6992-cloud/greekyogurt');
+        try {
+          history.replaceState(null, null, window.location.pathname);
+        } catch (e) {}
+        setTimeout(() => {
+          showToast('🟢 เชื่อมต่อ Cloud Admin ในเครื่องนี้เรียบร้อยแล้วค่ะ! 🎉');
+        }, 600);
+      }
+    }
+
     // --- Cloud Sync & Menu Loading ---
     async function loadMenuFromCloud() {
       const repo = localStorage.getItem('yogurt_github_repo') || 'fireworkz6992-cloud/greekyogurt';
+      const token = localStorage.getItem('yogurt_github_token');
       const cacheBuster = Date.now();
 
-      // Priority 1: Fetch local ./menu.json directly (Fastest, same-origin, zero rate limit, works everywhere)
+      // Priority 1: If Admin token is saved, fetch GitHub API with Auth for instant real-time data
+      if (token) {
+        try {
+          const res = await fetch(`https://api.github.com/repos/${repo}/contents/menu.json?t=${cacheBuster}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/vnd.github.v3+json'
+            }
+          });
+          if (res.ok) {
+            const fileData = await res.json();
+            if (fileData.content) {
+              const cleanBase64 = fileData.content.replace(/\s/g, '');
+              const bytes = Uint8Array.from(atob(cleanBase64), c => c.charCodeAt(0));
+              const decodedStr = new TextDecoder().decode(bytes);
+              const data = JSON.parse(decodedStr);
+              if (data && Array.isArray(data.bases) && Array.isArray(data.toppings)) {
+                applyLoadedMenu(data, 'GitHub API (Authenticated)');
+                return;
+              }
+            }
+          }
+        } catch (e) {}
+      }
+
+      // Priority 2: Fetch local ./menu.json directly (Fastest for customers, same-origin)
       try {
         const res = await fetch(`./menu.json?t=${cacheBuster}`, { cache: 'no-store' });
         if (res.ok) {
@@ -1786,7 +1827,7 @@
         }
       } catch (e) {}
 
-      // Priority 2: Fetch GitHub Contents API (Instant cloud commit bypasses GitHub Pages deploy delay)
+      // Priority 3: Fetch GitHub Contents API (Public fallback)
       try {
         const res = await fetch(`https://api.github.com/repos/${repo}/contents/menu.json?t=${cacheBuster}`, {
           headers: { 'Accept': 'application/vnd.github.v3+json' }
@@ -1799,14 +1840,14 @@
             const decodedStr = new TextDecoder().decode(bytes);
             const data = JSON.parse(decodedStr);
             if (data && Array.isArray(data.bases) && Array.isArray(data.toppings)) {
-              applyLoadedMenu(data, 'GitHub API');
+              applyLoadedMenu(data, 'GitHub API (Public)');
               return;
             }
           }
         }
       } catch (e) {}
 
-      // Priority 3: Fallback raw GitHub
+      // Priority 4: Fallback raw GitHub
       try {
         const res = await fetch(`https://raw.githubusercontent.com/${repo}/main/menu.json?t=${cacheBuster}`, { cache: 'no-store' });
         if (res.ok) {
@@ -1819,9 +1860,18 @@
     }
 
     function applyLoadedMenu(data, source) {
-      const currentUpdate = window._lastMenuUpdate || 0;
-      if (data.updatedAt && data.updatedAt < currentUpdate) return;
-      window._lastMenuUpdate = data.updatedAt || Date.now();
+      const localSavedTime = Number(localStorage.getItem('yogurt_menu_updated_at') || 0);
+      const currentUpdate = Math.max(window._lastMenuUpdate || 0, localSavedTime);
+      const incomingTime = Number(data.updatedAt || 0);
+
+      // Protect against stale cloud file overwriting newer local edits
+      if (incomingTime && incomingTime < currentUpdate) {
+        console.log(`⏳ ข้ามข้อมูลจาก ${source} เพราะเก่ากว่าข้อมูลในเครื่อง (${incomingTime} < ${currentUpdate})`);
+        return;
+      }
+
+      window._lastMenuUpdate = incomingTime || Date.now();
+      localStorage.setItem('yogurt_menu_updated_at', (incomingTime || Date.now()).toString());
 
       BASES = data.bases;
       TOPPINGS = data.toppings;
@@ -1872,9 +1922,40 @@
       renderAdminPanel();
     }
 
+    function toggleAdminBaseStock(idx) {
+      if (tempBases[idx]) {
+        tempBases[idx].available = (tempBases[idx].available === false) ? true : false;
+        renderAdminPanel();
+      }
+    }
+
+    function toggleAdminToppingStock(idx) {
+      if (tempToppings[idx]) {
+        tempToppings[idx].available = (tempToppings[idx].available === false) ? true : false;
+        renderAdminPanel();
+      }
+    }
+
     function renderAdminPanel() {
       const body = document.getElementById('adminBody');
       body.innerHTML = '';
+
+      // Update Save button and Cloud tab status
+      const btnSave = document.getElementById('btnSaveAdmin');
+      const hasCloudToken = !!localStorage.getItem('yogurt_github_token');
+      if (btnSave) {
+        if (hasCloudToken) {
+          btnSave.innerHTML = '<span>💾 บันทึกขึ้น Cloud ทันที (ซิงค์ให้ลูกค้าทุกคน) ☁️</span>';
+          btnSave.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        } else {
+          btnSave.innerHTML = '<span>⚠️ บันทึกการเปลี่ยนแปลง (ยังไม่ต่อ Cloud)</span>';
+          btnSave.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+        }
+      }
+      const tabBtnCloud = document.getElementById('tabBtnCloud');
+      if (tabBtnCloud) {
+        tabBtnCloud.innerHTML = hasCloudToken ? '☁️ Cloud (เชื่อมต่อแล้ว 🟢)' : '☁️ เชื่อมต่อ Cloud (🟡 ยังไม่ต่อ)';
+      }
 
       if (currentAdminTab === 'bases') {
         let html = '<div style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">🍨 จัดการรสชาติโยเกิร์ต (แก้ไขชื่อ, ราคา, เปิด/ปิดของหมด หรือลบ):</div>';
@@ -1884,13 +1965,13 @@
           html += `
             <div class="admin-item-row">
               <div class="admin-item-info">
-                <input type="text" class="admin-input-emoji" value="${b.emoji || '🍨'}" onchange="tempBases[${idx}].emoji = this.value">
-                <input type="text" class="admin-input-name" value="${b.name}" onchange="tempBases[${idx}].name = this.value">
-                <input type="number" class="admin-input-price" value="${b.price}" onchange="tempBases[${idx}].price = Number(this.value)">
+                <input type="text" class="admin-input-emoji" value="${b.emoji || '🍨'}" oninput="tempBases[${idx}].emoji = this.value">
+                <input type="text" class="admin-input-name" value="${b.name}" oninput="tempBases[${idx}].name = this.value">
+                <input type="number" class="admin-input-price" value="${b.price}" oninput="tempBases[${idx}].price = Number(this.value)">
                 <span style="font-size: 0.8rem; color: #64748b;">฿</span>
               </div>
               <div class="admin-actions">
-                <button type="button" class="btn-toggle-stock ${isAvailable ? 'in-stock' : 'out-of-stock'}" onclick="tempBases[${idx}].available = !${isAvailable}; renderAdminPanel();">
+                <button type="button" class="btn-toggle-stock ${isAvailable ? 'in-stock' : 'out-of-stock'}" onclick="toggleAdminBaseStock(${idx})">
                   ${isAvailable ? '✅ มีของ' : '❌ หมด'}
                 </button>
                 ${tempBases.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบรสชาตินี้ใช่หรือไม่?')){ tempBases.splice(${idx}, 1); renderAdminPanel(); }" title="ลบรสชาตินี้">🗑️</button>` : ''}
@@ -1919,11 +2000,11 @@
           html += `
             <div class="admin-item-row">
               <div class="admin-item-info">
-                <input type="text" class="admin-input-emoji" value="${t.emoji || '✨'}" onchange="tempToppings[${idx}].emoji = this.value">
-                <input type="text" class="admin-input-name" value="${t.name}" onchange="tempToppings[${idx}].name = this.value">
+                <input type="text" class="admin-input-emoji" value="${t.emoji || '✨'}" oninput="tempToppings[${idx}].emoji = this.value">
+                <input type="text" class="admin-input-name" value="${t.name}" oninput="tempToppings[${idx}].name = this.value">
               </div>
               <div class="admin-actions">
-                <button type="button" class="btn-toggle-stock ${isAvailable ? 'in-stock' : 'out-of-stock'}" onclick="tempToppings[${idx}].available = !${isAvailable}; renderAdminPanel();">
+                <button type="button" class="btn-toggle-stock ${isAvailable ? 'in-stock' : 'out-of-stock'}" onclick="toggleAdminToppingStock(${idx})">
                   ${isAvailable ? '✅ มีของ' : '❌ หมด'}
                 </button>
                 ${tempToppings.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบท็อปปิ้งนี้ใช่หรือไม่?')){ tempToppings.splice(${idx}, 1); renderAdminPanel(); }" title="ลบท็อปปิ้งนี้">🗑️</button>` : ''}
@@ -1952,8 +2033,8 @@
           <div class="cloud-status-card ${isConnected ? 'connected' : 'disconnected'}">
             <span>${isConnected ? '🟢' : '🟡'}</span>
             <div>
-              <b>${isConnected ? 'เชื่อมต่อ Cloud สำเร็จแล้ว' : 'ยังไม่ได้เชื่อมต่อ GitHub Token'}</b>
-              <div style="font-size: 0.78rem; opacity: 0.85;">${isConnected ? 'เมื่อกดปุ่มบันทึก ระบบจะส่งข้อมูลไปอัปเดตบนเว็บให้ลูกค้าทุกคนอัตโนมัติ' : 'ขณะนี้ระบบจะบันทึกเฉพาะในเครื่องนี้ หากต้องการให้อัปเดตขึ้นเว็บ ใส่ Token ด้านล่าง 1 ครั้งค่ะ'}</div>
+              <b>${isConnected ? 'เชื่อมต่อ Cloud สำเร็จแล้ว' : 'ยังไม่ได้เชื่อมต่อ GitHub Token ในเครื่องนี้'}</b>
+              <div style="font-size: 0.78rem; opacity: 0.85;">${isConnected ? 'เมื่อกดปุ่มบันทึก ระบบจะส่งข้อมูลไปอัปเดตบนเว็บให้ลูกค้าทุกคนอัตโนมัติ' : 'ขณะนี้หากบันทึก จะอยู่เฉพาะในเครื่องนี้ หากต้องการให้อัปเดตขึ้นเว็บ ใส่ Token ด้านล่าง 1 ครั้งค่ะ'}</div>
             </div>
           </div>
 
@@ -1970,12 +2051,22 @@
             </div>
           </div>
 
-          <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+          <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
             <button type="button" class="btn-save-admin" style="padding: 8px 14px; font-size: 0.85rem;" onclick="saveCloudSettings()">
               💾 บันทึกการเชื่อมต่อ Cloud
             </button>
             ${savedToken ? `<button type="button" class="btn-reset-admin" onclick="clearCloudSettings()">ตัดการเชื่อมต่อ</button>` : ''}
           </div>
+
+          ${isConnected ? `
+            <div style="margin-bottom: 16px; padding: 12px; background: rgba(16, 185, 129, 0.08); border: 1px dashed #10b981; border-radius: 8px;">
+              <div style="font-size: 0.84rem; font-weight: bold; color: #065f46; margin-bottom: 4px;">📲 จัดการร้านผ่านมือถือ ไม่ต้องพิมพ์ Token ใหม่:</div>
+              <div style="font-size: 0.76rem; color: #475569; margin-bottom: 8px;">กดปุ่มนี้เพื่อคัดลอกลิงก์พิเศษ ส่งเข้าแชท LINE ตัวเอง แล้วเปิดบนมือถือได้ทันที (ระบบจะเชื่อมต่อให้เองอัตโนมัติ):</div>
+              <button type="button" class="btn-save-admin" style="font-size: 0.8rem; padding: 6px 12px; background: #059669;" onclick="copyMobileAdminLink()">
+                📋 คัดลอกลิงก์แอดมินสำหรับเปิดบนมือถือ
+              </button>
+            </div>
+          ` : ''}
 
           <div class="cloud-guide-box">
             <div class="cloud-guide-title">
@@ -2000,6 +2091,17 @@
         `;
         body.innerHTML = html;
       }
+    }
+
+    function copyMobileAdminLink() {
+      const token = localStorage.getItem('yogurt_github_token');
+      if (!token) {
+        alert('กรุณากรอกและบันทึก GitHub Token ในช่องด้านบนก่อนค่ะ');
+        return;
+      }
+      const adminLink = window.location.origin + window.location.pathname + '#admin_token=' + token;
+      copyToClipboardFallback(adminLink);
+      showToast('📋 คัดลอกลิงก์แอดมินสำหรับมือถือแล้ว! ส่งเข้า LINE เปิดได้เลยค่ะ 🎉');
     }
 
     function toggleTokenVisibility() {
@@ -2106,9 +2208,9 @@
         const jsonString = JSON.stringify(menuData, null, 2);
         const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
 
-        // 3. PUT commit to GitHub
+        // 3. PUT commit to GitHub (no [skip ci] so GitHub Pages rebuilds and updates menu.json)
         const putBody = {
-          message: `Update menu catalog via Admin Panel (${new Date().toLocaleTimeString('th-TH')}) [skip ci]`,
+          message: `Update menu catalog via Admin Panel (${new Date().toLocaleTimeString('th-TH')})`,
           content: encodedContent
         };
         if (sha) putBody.sha = sha;
@@ -2138,8 +2240,22 @@
       const btnSave = document.getElementById('btnSaveAdmin');
       const originalText = btnSave.innerHTML;
 
+      const token = localStorage.getItem('yogurt_github_token');
+      if (!token) {
+        const wantConnect = confirm('⚠️ บราวเซอร์นี้ยังไม่ได้เชื่อมต่อ GitHub Token ค่ะ!\n\nหากบันทึกตอนนี้ ข้อมูลจะถูกเก็บเฉพาะในเครื่องนี้เท่านั้น แต่จะ "ไม่ขึ้นเว็บจริง" (ลูกค้าคนอื่นจะไม่เห็นของหมด)\n\n👉 กด "ตกลง" เพื่อไปหน้าเชื่อมต่อ Cloud ทันที (ใส่ Token แค่ครั้งเดียว)\n👉 หรือกด "ยกเลิก" หากต้องการบันทึกดูคนเดียวในเครื่องนี้');
+        if (wantConnect) {
+          switchAdminTab('cloud');
+          return;
+        }
+      }
+
       BASES = JSON.parse(JSON.stringify(tempBases));
       TOPPINGS = JSON.parse(JSON.stringify(tempToppings));
+
+      // 1. Mark save timestamp immediately in localStorage so stale cloud loads won't overwrite it
+      const now = Date.now();
+      window._lastMenuUpdate = now;
+      localStorage.setItem('yogurt_menu_updated_at', now.toString());
 
       // Save locally
       localStorage.setItem('yogurt_custom_bases', JSON.stringify(BASES));
@@ -2158,12 +2274,11 @@
       renderCups();
 
       const menuPayload = {
-        updatedAt: Date.now(),
+        updatedAt: now,
         bases: BASES,
         toppings: TOPPINGS
       };
 
-      const token = localStorage.getItem('yogurt_github_token');
       if (token) {
         btnSave.disabled = true;
         btnSave.innerHTML = '<span>⏳ กำลังบันทึกขึ้น Cloud...</span>';
@@ -2180,7 +2295,7 @@
         }
       } else {
         closeAdminPanel();
-        showToast('💾 บันทึกในเครื่องเรียบร้อยแล้วค่ะ!');
+        showToast('💾 บันทึกเฉพาะในเครื่องนี้เรียบร้อยแล้วค่ะ');
       }
     }
 
@@ -2188,6 +2303,7 @@
       if (confirm('คุณต้องการรีเซ็ตเมนูและราคาทั้งหมดกลับเป็นค่าเริ่มต้นใช่หรือไม่?')) {
         localStorage.removeItem('yogurt_custom_bases');
         localStorage.removeItem('yogurt_custom_toppings');
+        localStorage.removeItem('yogurt_menu_updated_at');
         BASES = JSON.parse(JSON.stringify(DEFAULT_BASES));
         TOPPINGS = JSON.parse(JSON.stringify(DEFAULT_TOPPINGS));
         tempBases = JSON.parse(JSON.stringify(BASES));
