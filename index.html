@@ -1383,6 +1383,7 @@
       cups.forEach((cup, index) => {
         const card = document.createElement('div');
         card.className = 'item-card';
+        card.id = `cupCard_${cup.id}`;
 
         const isFirst = cups.length === 1;
         const baseObj = BASES.find(b => b.id === cup.baseId);
@@ -1553,8 +1554,11 @@
       });
       renderCups();
       setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight - 250, behavior: 'smooth' });
-      }, 100);
+        const newCard = document.getElementById(`cupCard_${newId}`);
+        if (newCard) {
+          newCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 60);
     }
 
     function removeCup(cupId) {
