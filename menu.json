@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1795375628015,
+  "updatedAt": 1795376574181,
   "bases": [
     {
       "id": "plain",
@@ -18,7 +18,7 @@
     {
       "id": "grape",
       "name": "องุ่นสอดไส้กรีกโยเกิร์ต (1 กล่อง)",
-      "price": 99,
+      "price": 49,
       "emoji": "🍇",
       "isSpecial": true,
       "available": true
