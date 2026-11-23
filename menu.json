@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1795424579340,
+  "updatedAt": 1795427501932,
   "bases": [
     {
       "id": "plain_pure",
@@ -67,6 +67,12 @@
       "name": "แก้วมังกร",
       "emoji": "🐉",
       "available": false
+    },
+    {
+      "id": "top_1795427496019",
+      "name": "องุ่น",
+      "emoji": "🍇",
+      "available": true
     },
     {
       "id": "banana",
