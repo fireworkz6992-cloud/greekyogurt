@@ -1009,7 +1009,7 @@
       border: 1px solid #e2e8f0;
       color: #94a3b8;
       border-radius: 8px;
-      width: 32px;
+      width: 30px;
       height: 32px;
       cursor: pointer;
       display: flex;
@@ -1017,12 +1017,90 @@
       justify-content: center;
       font-size: 0.85rem;
       transition: all 0.15s ease;
+      flex-shrink: 0;
     }
 
     .btn-delete-item:hover {
       background: #fee2e2;
       color: #ef4444;
       border-color: #fca5a5;
+    }
+
+    /* Admin Drag Handle & Reorder Buttons */
+    .admin-drag-handle {
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 32px;
+      color: #94a3b8;
+      font-size: 1.15rem;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .admin-drag-handle:hover,
+    .admin-drag-handle:active {
+      color: #be123c;
+      background: #ffe4e6;
+    }
+
+    .admin-item-btns {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .btn-move-item {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      border-radius: 7px;
+      width: 26px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .btn-move-item:hover:not(:disabled) {
+      background: #be123c;
+      color: #ffffff;
+      border-color: #be123c;
+    }
+
+    .btn-move-item:disabled {
+      opacity: 0.22;
+      cursor: not-allowed;
+      border-color: #e2e8f0;
+      color: #cbd5e1;
+      background: #f8fafc;
+    }
+
+    .admin-item-row {
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .admin-item-row.dragging {
+      opacity: 0.45;
+      border: 2px dashed #be123c !important;
+      background: #fff1f2 !important;
+      transform: scale(0.98);
+    }
+
+    .admin-item-row.drag-over-top {
+      border-top: 3px solid #be123c !important;
     }
 
     .admin-add-box {
@@ -2134,6 +2212,118 @@
       }
     }
 
+    // --- Admin Item Reordering & Drag-and-Drop ---
+    function moveAdminItem(type, index, delta) {
+      const list = (type === 'bases') ? tempBases : tempToppings;
+      const targetIndex = index + delta;
+      if (targetIndex < 0 || targetIndex >= list.length) return;
+      const [item] = list.splice(index, 1);
+      list.splice(targetIndex, 0, item);
+      renderAdminPanel();
+    }
+
+    let adminDragState = {
+      type: null,
+      sourceIdx: null
+    };
+
+    function handleAdminDragStart(e, type, idx) {
+      adminDragState = { type, sourceIdx: idx };
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', idx);
+      setTimeout(() => {
+        const row = document.getElementById(`adminItem_${type}_${idx}`);
+        if (row) row.classList.add('dragging');
+      }, 0);
+    }
+
+    function handleAdminDragOver(e, type, idx) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (adminDragState.type !== type || adminDragState.sourceIdx === idx) return;
+      const row = document.getElementById(`adminItem_${type}_${idx}`);
+      if (row) {
+        row.classList.add('drag-over-top');
+      }
+    }
+
+    function handleAdminDragLeave(e, type, idx) {
+      const row = document.getElementById(`adminItem_${type}_${idx}`);
+      if (row) {
+        row.classList.remove('drag-over-top');
+      }
+    }
+
+    function handleAdminDrop(e, type, targetIdx) {
+      e.preventDefault();
+      const sourceIdx = adminDragState.sourceIdx;
+      if (sourceIdx !== null && sourceIdx !== targetIdx && adminDragState.type === type) {
+        const list = (type === 'bases') ? tempBases : tempToppings;
+        const [item] = list.splice(sourceIdx, 1);
+        list.splice(targetIdx, 0, item);
+        renderAdminPanel();
+      }
+      handleAdminDragEnd();
+    }
+
+    function handleAdminDragEnd() {
+      document.querySelectorAll('.admin-item-row').forEach(el => {
+        el.classList.remove('dragging', 'drag-over-top');
+      });
+      adminDragState = { type: null, sourceIdx: null };
+    }
+
+    let touchDrag = {
+      type: null,
+      sourceIdx: null,
+      activeRow: null
+    };
+
+    function handleAdminTouchStart(e, type, idx) {
+      const row = document.getElementById(`adminItem_${type}_${idx}`);
+      touchDrag = {
+        type,
+        sourceIdx: idx,
+        activeRow: row
+      };
+      if (row) row.classList.add('dragging');
+    }
+
+    function handleAdminTouchMove(e) {
+      if (!touchDrag.activeRow) return;
+      if (e.cancelable) e.preventDefault();
+      const touch = e.touches[0];
+      const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+      const rowUnder = elementUnder ? elementUnder.closest('.admin-item-row') : null;
+
+      document.querySelectorAll('.admin-item-row').forEach(el => el.classList.remove('drag-over-top'));
+
+      if (rowUnder && rowUnder !== touchDrag.activeRow && rowUnder.id && rowUnder.id.startsWith(`adminItem_${touchDrag.type}_`)) {
+        rowUnder.classList.add('drag-over-top');
+      }
+    }
+
+    function handleAdminTouchEnd(e) {
+      if (!touchDrag.activeRow) return;
+      const touch = e.changedTouches[0];
+      const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+      const rowUnder = elementUnder ? elementUnder.closest('.admin-item-row') : null;
+
+      if (rowUnder && rowUnder !== touchDrag.activeRow && rowUnder.id && rowUnder.id.startsWith(`adminItem_${touchDrag.type}_`)) {
+        const parts = rowUnder.id.split('_');
+        const targetIdx = parseInt(parts[2]);
+        if (!isNaN(targetIdx) && targetIdx !== touchDrag.sourceIdx) {
+          const list = (touchDrag.type === 'bases') ? tempBases : tempToppings;
+          const [item] = list.splice(touchDrag.sourceIdx, 1);
+          list.splice(targetIdx, 0, item);
+          renderAdminPanel();
+        }
+      }
+
+      handleAdminDragEnd();
+      touchDrag = { type: null, sourceIdx: null, activeRow: null };
+    }
+
     function renderAdminPanel() {
       const body = document.getElementById('adminBody');
       body.innerHTML = '';
@@ -2156,17 +2346,32 @@
       }
 
       if (currentAdminTab === 'bases') {
-        let html = '<div style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;">🍨 จัดการรสชาติโยเกิร์ต (แก้ไขชื่อ, ราคา, เปิด/ปิดของหมด หรือลบ):</div>';
+        let html = '<div style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;">🍨 จัดการรสชาติโยเกิร์ต (จิ้มลาก ⠿ หรือกด ▲/▼ จัดลำดับ, แก้ไขชื่อ/ราคา):</div>';
 
         tempBases.forEach((b, idx) => {
           const isAvailable = b.available !== false;
           const hasTop = b.hasToppings !== false && !b.isSpecial;
           html += `
-            <div class="admin-item-row">
+            <div class="admin-item-row" id="adminItem_bases_${idx}" draggable="true"
+                 ondragstart="handleAdminDragStart(event, 'bases', ${idx})"
+                 ondragover="handleAdminDragOver(event, 'bases', ${idx})"
+                 ondragleave="handleAdminDragLeave(event, 'bases', ${idx})"
+                 ondrop="handleAdminDrop(event, 'bases', ${idx})"
+                 ondragend="handleAdminDragEnd(event)">
               <div class="admin-item-top">
+                <div class="admin-drag-handle" title="จิ้มลากเพื่อสลับลำดับ"
+                     ontouchstart="handleAdminTouchStart(event, 'bases', ${idx})"
+                     ontouchmove="handleAdminTouchMove(event)"
+                     ontouchend="handleAdminTouchEnd(event)">
+                  <span>⠿</span>
+                </div>
                 <input type="text" class="admin-input-emoji" value="${b.emoji || '🍨'}" oninput="tempBases[${idx}].emoji = this.value">
                 <input type="text" class="admin-input-name" value="${b.name}" oninput="tempBases[${idx}].name = this.value" placeholder="ชื่อรสชาติ">
-                ${tempBases.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบรสชาตินี้ใช่หรือไม่?')){ tempBases.splice(${idx}, 1); renderAdminPanel(); }" title="ลบรสชาตินี้">🗑️</button>` : ''}
+                <div class="admin-item-btns">
+                  <button type="button" class="btn-move-item" onclick="moveAdminItem('bases', ${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="เลื่อนขึ้น">▲</button>
+                  <button type="button" class="btn-move-item" onclick="moveAdminItem('bases', ${idx}, 1)" ${idx === tempBases.length - 1 ? 'disabled' : ''} title="เลื่อนลง">▼</button>
+                  ${tempBases.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบรสชาตินี้ใช่หรือไม่?')){ tempBases.splice(${idx}, 1); renderAdminPanel(); }" title="ลบรสชาตินี้">🗑️</button>` : ''}
+                </div>
               </div>
               <div class="admin-item-bottom">
                 <div class="admin-price-box">
@@ -2213,16 +2418,31 @@
         `;
         body.innerHTML = html;
       } else if (currentAdminTab === 'toppings') {
-        let html = '<div style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;">🍓 จัดการท็อปปิ้ง (แก้ไขชื่อ, เปิด/ปิดของหมด หรือลบ):</div>';
+        let html = '<div style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;">🍓 จัดการท็อปปิ้ง (จิ้มลาก ⠿ หรือกด ▲/▼ จัดลำดับ, แก้ไขชื่อ, เปิด/ปิดของหมด):</div>';
 
         tempToppings.forEach((t, idx) => {
           const isAvailable = t.available !== false;
           html += `
-            <div class="admin-item-row">
+            <div class="admin-item-row" id="adminItem_toppings_${idx}" draggable="true"
+                 ondragstart="handleAdminDragStart(event, 'toppings', ${idx})"
+                 ondragover="handleAdminDragOver(event, 'toppings', ${idx})"
+                 ondragleave="handleAdminDragLeave(event, 'toppings', ${idx})"
+                 ondrop="handleAdminDrop(event, 'toppings', ${idx})"
+                 ondragend="handleAdminDragEnd(event)">
               <div class="admin-item-top">
+                <div class="admin-drag-handle" title="จิ้มลากเพื่อสลับลำดับ"
+                     ontouchstart="handleAdminTouchStart(event, 'toppings', ${idx})"
+                     ontouchmove="handleAdminTouchMove(event)"
+                     ontouchend="handleAdminTouchEnd(event)">
+                  <span>⠿</span>
+                </div>
                 <input type="text" class="admin-input-emoji" value="${t.emoji || '✨'}" oninput="tempToppings[${idx}].emoji = this.value">
                 <input type="text" class="admin-input-name" value="${t.name}" oninput="tempToppings[${idx}].name = this.value" placeholder="ชื่อท็อปปิ้ง">
-                ${tempToppings.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบท็อปปิ้งนี้ใช่หรือไม่?')){ tempToppings.splice(${idx}, 1); renderAdminPanel(); }" title="ลบท็อปปิ้งนี้">🗑️</button>` : ''}
+                <div class="admin-item-btns">
+                  <button type="button" class="btn-move-item" onclick="moveAdminItem('toppings', ${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="เลื่อนขึ้น">▲</button>
+                  <button type="button" class="btn-move-item" onclick="moveAdminItem('toppings', ${idx}, 1)" ${idx === tempToppings.length - 1 ? 'disabled' : ''} title="เลื่อนลง">▼</button>
+                  ${tempToppings.length > 1 ? `<button type="button" class="btn-delete-item" onclick="if(confirm('ลบท็อปปิ้งนี้ใช่หรือไม่?')){ tempToppings.splice(${idx}, 1); renderAdminPanel(); }" title="ลบท็อปปิ้งนี้">🗑️</button>` : ''}
+                </div>
               </div>
               <div class="admin-item-bottom">
                 <span style="font-size: 0.8rem; color: #64748b; font-weight: 500;">สถานะท็อปปิ้ง:</span>
