@@ -976,6 +976,34 @@
       border: 1px solid #fecdd3;
     }
 
+    .btn-toggle-top {
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-family: var(--font-kanit);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-toggle-top.has-top {
+      background: #fdf2f8;
+      color: #be185d;
+      border: 1px solid #fbcfe8;
+    }
+
+    .btn-toggle-top.no-top {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+
     .btn-delete-item {
       background: #ffffff;
       border: 1px solid #e2e8f0;
@@ -1301,10 +1329,18 @@
   <script>
     // Default Product Catalog
     const DEFAULT_BASES = [
-      { id: 'plain', name: 'กรีกโยเกิร์ต ดั้งเดิม (60g)', price: 69, emoji: '🍨', available: true },
-      { id: 'sesame', name: 'กรีกโยเกิร์ต งาดำ (60g)', price: 69, emoji: '🖤', available: true },
-      { id: 'grape', name: 'องุ่นสอดไส้กรีกโยเกิร์ต (1 กล่อง)', price: 39, emoji: '🍇', isSpecial: true, available: true }
+      { id: 'plain', name: 'กรีกโยเกิร์ต ดั้งเดิม (60g)', price: 69, emoji: '🍨', hasToppings: true, available: true },
+      { id: 'plain_pure', name: 'กรีกโยเกิร์ตล้วน ไม่รับท็อปปิ้ง (60g)', price: 49, emoji: '🥣', hasToppings: false, available: true },
+      { id: 'sesame', name: 'กรีกโยเกิร์ต งาดำ (60g)', price: 79, emoji: '🖤', hasToppings: true, available: true },
+      { id: 'grape', name: 'องุ่นสอดไส้กรีกโยเกิร์ต (1 กล่อง)', price: 59, emoji: '🍇', isSpecial: true, hasToppings: false, available: true }
     ];
+
+    function baseHasToppings(b) {
+      if (!b) return true;
+      if (b.hasToppings === false) return false;
+      if (b.isSpecial || b.id === 'grape' || b.id === 'plain_pure') return false;
+      return true;
+    }
 
     const DEFAULT_TOPPINGS = [
       { id: 'banana', name: 'กล้วยหอม', emoji: '🍌', available: true },
@@ -1319,6 +1355,19 @@
     // Active Catalog loaded from localStorage or default
     let BASES = JSON.parse(localStorage.getItem('yogurt_custom_bases')) || JSON.parse(JSON.stringify(DEFAULT_BASES));
     let TOPPINGS = JSON.parse(localStorage.getItem('yogurt_custom_toppings')) || JSON.parse(JSON.stringify(DEFAULT_TOPPINGS));
+
+    // Ensure plain_pure exists in BASES if not already present
+    if (!BASES.some(b => b.id === 'plain_pure')) {
+      const pureDef = DEFAULT_BASES.find(b => b.id === 'plain_pure');
+      if (pureDef) {
+        const plainIdx = BASES.findIndex(b => b.id === 'plain');
+        if (plainIdx !== -1) {
+          BASES.splice(plainIdx + 1, 0, JSON.parse(JSON.stringify(pureDef)));
+        } else {
+          BASES.push(JSON.parse(JSON.stringify(pureDef)));
+        }
+      }
+    }
 
     // Admin working state
     let tempBases = [];
@@ -1450,11 +1499,12 @@
 
         const isFirst = cups.length === 1;
         const baseObj = BASES.find(b => b.id === cup.baseId);
+        const hasTop = baseHasToppings(baseObj);
         const isGrape = cup.baseId === 'grape';
 
         // Calculate cup price
         let extraToppingsCount = Math.max(0, cup.toppings.length - 2);
-        let cupPrice = baseObj ? (baseObj.price + (isGrape ? 0 : (extraToppingsCount * 10))) : 0;
+        let cupPrice = baseObj ? (baseObj.price + (hasTop ? (extraToppingsCount * 10) : 0)) : 0;
 
         const theme = CUP_THEMES[index % CUP_THEMES.length];
         card.style.background = theme.cardBg;
@@ -1493,7 +1543,7 @@
           }).join('')}
         </div>
 
-        ${!isGrape ? `
+        ${hasTop ? `
           <!-- 2. Choose Toppings -->
           <div class="step-label" style="margin-top: 14px;">
             <span>2. เลือกท็อปปิ้ง</span>
@@ -1548,9 +1598,26 @@
             </div>
           </div>
         ` : `
-          <div style="background: rgba(255, 255, 255, 0.85); border: 1.5px dashed ${theme.borderColor}; border-radius: 12px; padding: 12px; margin-top: 10px; font-size: 0.85rem; color: #475569; text-align: center;">
-            🍇 องุ่นไชน์มัสแคท / องุ่นดำ คัดพิเศษ ยัดไส้กรีกโยเกิร์ตเต็มคำ ทานง่าย อร่อยฟิน!
-          </div>
+          ${isGrape ? `
+            <div style="background: rgba(255, 255, 255, 0.85); border: 1.5px dashed ${theme.borderColor}; border-radius: 12px; padding: 12px; margin-top: 10px; font-size: 0.85rem; color: #475569; text-align: center;">
+              🍇 องุ่นไชน์มัสแคท / องุ่นดำ คัดพิเศษ ยัดไส้กรีกโยเกิร์ตเต็มคำ ทานง่าย อร่อยฟิน!
+            </div>
+          ` : `
+            <div style="background: rgba(255, 255, 255, 0.85); border: 1.5px dashed ${theme.borderColor}; border-radius: 12px; padding: 12px; margin-top: 10px; font-size: 0.85rem; color: #475569; text-align: center;">
+              🥣 กรีกโยเกิร์ตโฮมเมดล้วนเข้มข้น รสธรรมชาติ ไม่รับท็อปปิ้ง (49.-)
+            </div>
+            <!-- Free Honey Option for Pure Yogurt -->
+            <div class="honey-row" style="margin-top: 10px;">
+              <div class="honey-label">
+                <span>🍯</span>
+                <span>ราดน้ำผึ้งแท้ฟรี:</span>
+              </div>
+              <div class="honey-switch">
+                <button type="button" class="honey-btn ${cup.honey === 'free' ? 'active' : ''}" onclick="setHoney(${cup.id}, 'free')">รับน้ำผึ้งฟรี</button>
+                <button type="button" class="honey-btn ${cup.honey === 'no' ? 'active' : ''}" onclick="setHoney(${cup.id}, 'no')">ไม่รับ</button>
+              </div>
+            </div>
+          `}
         `}
 
         <div class="cup-subtotal" style="border-top: 1px dashed ${theme.borderColor};">
@@ -1575,6 +1642,9 @@
       const cup = cups.find(c => c.id === cupId);
       if (cup) {
         cup.baseId = baseId;
+        if (!baseHasToppings(baseObj)) {
+          cup.toppings = [];
+        }
         renderCups();
       }
     }
@@ -1754,16 +1824,17 @@
 
       cups.forEach((cup, idx) => {
         const baseObj = BASES.find(b => b.id === cup.baseId);
+        const hasTop = baseHasToppings(baseObj);
         const isGrape = cup.baseId === 'grape';
         let extraToppingsCount = Math.max(0, cup.toppings.length - 2);
-        let cupPrice = baseObj ? (baseObj.price + (isGrape ? 0 : (extraToppingsCount * 10))) : 0;
+        let cupPrice = baseObj ? (baseObj.price + (hasTop ? (extraToppingsCount * 10) : 0)) : 0;
         totalAmount += cupPrice;
 
         const theme = CUP_THEMES[idx % CUP_THEMES.length];
         if (baseObj) {
           lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: ${baseObj.name} (${cupPrice}.-)`);
 
-          if (!isGrape) {
+          if (hasTop) {
             if (cup.toppings.length > 0) {
               const counts = {};
               cup.toppings.forEach(tId => { counts[tId] = (counts[tId] || 0) + 1; });
@@ -1780,6 +1851,10 @@
             }
 
             lines.push(`   • น้ำผึ้ง: ${cup.honey === 'free' ? 'รับน้ำผึ้งแท้ฟรี 🍯' : 'ไม่รับน้ำผึ้ง'}`);
+          } else {
+            if (!isGrape) {
+              lines.push(`   • น้ำผึ้ง: ${cup.honey === 'free' ? 'รับน้ำผึ้งแท้ฟรี 🍯' : 'ไม่รับน้ำผึ้ง'}`);
+            }
           }
         } else {
           lines.push(`${theme.icon} ถ้วยที่ ${idx + 1}: (ยังไม่ได้เลือกรสชาติ)`);
@@ -1976,6 +2051,20 @@
 
       BASES = data.bases;
       TOPPINGS = data.toppings;
+
+      // Ensure plain_pure exists in BASES if not already present
+      if (!BASES.some(b => b.id === 'plain_pure')) {
+        const pureDef = DEFAULT_BASES.find(b => b.id === 'plain_pure');
+        if (pureDef) {
+          const plainIdx = BASES.findIndex(b => b.id === 'plain');
+          if (plainIdx !== -1) {
+            BASES.splice(plainIdx + 1, 0, JSON.parse(JSON.stringify(pureDef)));
+          } else {
+            BASES.push(JSON.parse(JSON.stringify(pureDef)));
+          }
+        }
+      }
+
       localStorage.setItem('yogurt_custom_bases', JSON.stringify(BASES));
       localStorage.setItem('yogurt_custom_toppings', JSON.stringify(TOPPINGS));
       renderCups();
@@ -2030,6 +2119,14 @@
       }
     }
 
+    function toggleAdminBaseToppings(idx) {
+      if (tempBases[idx]) {
+        const current = tempBases[idx].hasToppings !== false && !tempBases[idx].isSpecial;
+        tempBases[idx].hasToppings = !current;
+        renderAdminPanel();
+      }
+    }
+
     function toggleAdminToppingStock(idx) {
       if (tempToppings[idx]) {
         tempToppings[idx].available = (tempToppings[idx].available === false) ? true : false;
@@ -2063,6 +2160,7 @@
 
         tempBases.forEach((b, idx) => {
           const isAvailable = b.available !== false;
+          const hasTop = b.hasToppings !== false && !b.isSpecial;
           html += `
             <div class="admin-item-row">
               <div class="admin-item-top">
@@ -2076,9 +2174,14 @@
                   <input type="number" class="admin-input-price" value="${b.price}" oninput="tempBases[${idx}].price = Number(this.value)">
                   <span style="font-size: 0.8rem; color: #64748b; font-weight: 500;">฿</span>
                 </div>
-                <button type="button" class="btn-toggle-stock ${isAvailable ? 'in-stock' : 'out-of-stock'}" onclick="toggleAdminBaseStock(${idx})">
-                  ${isAvailable ? '✅ มีของ' : '❌ หมด'}
-                </button>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                  <button type="button" class="btn-toggle-top ${hasTop ? 'has-top' : 'no-top'}" onclick="toggleAdminBaseToppings(${idx})" title="คลิกเพื่อสลับว่ามีให้เลือกท็อปปิ้งหรือไม่">
+                    ${hasTop ? '🍓 มีท็อปปิ้ง' : '🚫 ไม่มีท็อปปิ้ง'}
+                  </button>
+                  <button type="button" class="btn-toggle-stock ${isAvailable ? 'in-stock' : 'out-of-stock'}" onclick="toggleAdminBaseStock(${idx})">
+                    ${isAvailable ? '✅ มีของ' : '❌ หมด'}
+                  </button>
+                </div>
               </div>
             </div>
           `;
@@ -2092,13 +2195,18 @@
                 <input type="text" id="newBaseEmoji" class="admin-input-emoji" value="🍨" placeholder="ไอคอน">
                 <input type="text" id="newBaseName" class="admin-input-name" placeholder="ชื่อรสชาติ (เช่น กรีกโยเกิร์ต มัทฉะ)">
               </div>
-              <div style="display: flex; gap: 8px; width: 100%; align-items: center; justify-content: space-between; margin-top: 6px;">
+              <div style="display: flex; gap: 6px; width: 100%; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <span style="font-size: 0.8rem; color: #64748b;">ราคา:</span>
                   <input type="number" id="newBasePrice" class="admin-input-price" placeholder="ราคา" value="69">
                   <span style="font-size: 0.8rem; color: #64748b;">฿</span>
                 </div>
-                <button type="button" class="btn-add-submit" onclick="addNewBase()">+ เพิ่มรายการ</button>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <label style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: #475569; cursor: pointer;">
+                    <input type="checkbox" id="newBaseHasTop" checked style="accent-color: #be123c;"> มีท็อปปิ้ง
+                  </label>
+                  <button type="button" class="btn-add-submit" onclick="addNewBase()">+ เพิ่มรายการ</button>
+                </div>
               </div>
             </div>
           </div>
@@ -2309,12 +2417,13 @@
       const name = document.getElementById('newBaseName').value.trim();
       const emoji = document.getElementById('newBaseEmoji').value.trim() || '🍨';
       const price = Number(document.getElementById('newBasePrice').value) || 69;
+      const hasToppings = document.getElementById('newBaseHasTop') ? document.getElementById('newBaseHasTop').checked : true;
       if (!name) {
         alert('กรุณาใส่ชื่อรสชาติโยเกิร์ตค่ะ');
         return;
       }
       const id = 'base_' + Date.now();
-      tempBases.push({ id, name, price, emoji, available: true });
+      tempBases.push({ id, name, price, emoji, hasToppings, available: true });
       renderAdminPanel();
     }
 

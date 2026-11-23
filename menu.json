@@ -1,11 +1,20 @@
 {
-  "updatedAt": 1795413460148,
+  "updatedAt": 1795416000000,
   "bases": [
     {
       "id": "plain",
       "name": "กรีกโยเกิร์ต ดั้งเดิม (60g)",
       "price": 69,
       "emoji": "🍨",
+      "hasToppings": true,
+      "available": true
+    },
+    {
+      "id": "plain_pure",
+      "name": "กรีกโยเกิร์ตล้วน ไม่รับท็อปปิ้ง (60g)",
+      "price": 49,
+      "emoji": "🥣",
+      "hasToppings": false,
       "available": true
     },
     {
@@ -13,6 +22,7 @@
       "name": "กรีกโยเกิร์ต งาดำ (60g)",
       "price": 79,
       "emoji": "🖤",
+      "hasToppings": true,
       "available": true
     },
     {
@@ -21,6 +31,7 @@
       "price": 59,
       "emoji": "🍇",
       "isSpecial": true,
+      "hasToppings": false,
       "available": true
     }
   ],
