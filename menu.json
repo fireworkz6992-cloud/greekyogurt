@@ -1,17 +1,17 @@
 {
-  "updatedAt": 1795413429435,
+  "updatedAt": 1795413460148,
   "bases": [
     {
       "id": "plain",
       "name": "กรีกโยเกิร์ต ดั้งเดิม (60g)",
-      "price": 49,
+      "price": 69,
       "emoji": "🍨",
       "available": true
     },
     {
       "id": "sesame",
       "name": "กรีกโยเกิร์ต งาดำ (60g)",
-      "price": 59,
+      "price": 79,
       "emoji": "🖤",
       "available": true
     },
