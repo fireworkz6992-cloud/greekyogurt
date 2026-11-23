@@ -716,8 +716,8 @@
       position: absolute;
       top: 12px;
       right: 12px;
-      background: rgba(255, 255, 255, 0.8);
-      border: 1px solid #fecdd3;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(254, 205, 211, 0.6);
       border-radius: 999px;
       width: 32px;
       height: 32px;
@@ -727,11 +727,13 @@
       cursor: pointer;
       font-size: 0.95rem;
       color: #881337;
-      transition: all 0.15s ease;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      opacity: 0.45;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
     }
 
-    .btn-admin-gear:hover {
+    .btn-admin-gear:hover, .btn-admin-gear:active {
+      opacity: 1;
       background: #ffffff;
       transform: rotate(45deg);
     }
@@ -1256,7 +1258,7 @@
       <input type="password" id="adminPassInput" class="form-input" placeholder="ใส่รหัสผ่าน 4 หลัก" maxlength="8"
         style="text-align: center; font-size: 1.2rem; letter-spacing: 0.25em; margin-bottom: 10px;"
         onkeyup="if(event.key==='Enter') submitAdminPass()">
-      <div id="adminPassError" style="color: #ef4444; font-size: 0.8rem; margin-bottom: 10px; display: none;">❌ รหัสผ่านไม่ถูกต้องค่ะ (3112)</div>
+      <div id="adminPassError" style="color: #ef4444; font-size: 0.8rem; margin-bottom: 10px; display: none;">❌ รหัสผ่านไม่ถูกต้องค่ะ กรุณาลองใหม่อีกครั้ง</div>
       <div style="display: flex; gap: 8px;">
         <button type="button" class="btn-reset-admin" style="flex: 1;" onclick="closeAdminLogin()">ยกเลิก</button>
         <button type="button" class="btn-save-admin" style="flex: 1; padding: 8px 12px; font-size: 0.9rem;"
